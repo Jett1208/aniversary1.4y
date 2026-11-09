@@ -1,0 +1,52 @@
+# Glossary — "Our 1.4 Years Journey" 3D Pop-up Scrapbook
+
+> Domain terms for this project. No implementation details — just vocabulary.
+
+| Term | Definition |
+|---|---|
+| **Chapter** | One of 7 location-based scenes (เกาะเกร็ด, ทรงวาด, ตลาดน้อย, สวนลุมพินี, คาเฟ่นายปาร์คเลิศ, The Lake Club เมืองทอง, พัทยา) containing pop-up layers, a polaroid, and an interactive prop. |
+| **Paper Cutout** | A textured 3D plane representing a photo card or cutout with a white border and washi tape, mounted on the scrapbook surface. Pivots from its bottom edge. |
+| **Layer** | One depth tier within a chapter's pop-up diorama: background, middle, or foreground. Each layer is a Paper Cutout at a specific `zOffset`. |
+| **Pop-up** | The collective set of Paper Cutouts in a chapter that fold up (open) and fold down (close) as the camera enters/exits the chapter's scroll zone. |
+| **Polaroid** | A small flippable card placed on the scrapbook surface near a chapter. Front face shows a photo; back face shows a secret handwritten note. |
+| **Interactive Prop** | A Paper Cutout within a chapter that responds to click/tap with a unique animation and SFX (e.g., `pottery-spin`, `car-honk`, `tea-clink`, `lake-lights`). Replayable with no state. |
+| **Prop Action Type** | The specific animation behavior of an Interactive Prop. One of: `pottery-spin`, `camera-flash`, `car-honk`, `duck-paddle`, `tea-clink`, `lake-lights`, `fireworks`. |
+| **Caption Card** | An HTML overlay (via drei `<Html>`) positioned to the right of the 3D scene, styled as a torn notebook page, showing the chapter's memory text. |
+| **Scrapbook Surface** | The layered craft-paper stages arranged along the Z-axis (Depth Tunnel) on which each chapter's pop-up elements rest. |
+| **Depth Tunnel Dive** | The 3D camera locomotion where scrolling moves the camera forward along the Z-axis, diving deep through each chapter stage rather than panning sideways. |
+| **Scrub-Linked Folding** | The 1:1 binding between the user's scroll progress and the folding/unfolding angles of Paper Cutouts, paired with soft magnetic snapping at chapter focal points. |
+| **Polaroid Portal** | The visual gateway mechanic where a chapter's Polaroid card enlarges as the user scrolls forward, allowing the camera to dive through its frame into the next chapter scene. |
+| **Origami Rocket Navigator** | The continuous 3D paper airplane/rocket companion that flies ahead of the camera, guiding the dive path and triggering sparkling confetti transitions between chapters. |
+| **Flanking Weave Flight** | The flight trajectory where the Origami Rocket stays in the outer flanking zones (alternating left-top and right-side between chapters) and weaves across in a high S-curve arc, ensuring the center photos remain 100% unobstructed. |
+| **Tangent Trajectory Heading** | The continuous orientation calculation that rotates the paper airplane's nose directly along its instantaneous 3D velocity vector, ensuring the sharp nose always leads forward into the flight path. |
+| **Forward-Facing Navigator** | The standard coordinate alignment where the paper airplane's nose points strictly along the local -Z axis into the scene's depth, guaranteeing it always flies forward into the diorama and never points backward towards the viewer's face. |
+| **Dominant Forward Glide** | The flight constraint where the paper airplane's heading is clamped primarily along the forward depth axis (-Z) with a subtle downward glide pitch (~12°) and restricted yaw (max ±18°), preventing the fuselage from ever rotating sideways or pointing into the central photos. |
+| **Skyway Arc Clearance** | The altitude safety algorithm that maintains the Origami Rocket's cruise elevation safely above the tops of the standing photo cards ($Y \ge 3.6$) and arcs higher ($Y \approx 4.6$) during chapter transitions, preventing any visual clipping or piercing through memories. |
+| **Scroll-Driven Aerodynamic Thrust** | The interactive physics response where scrolling down causes the paper plane to surge forward ahead into the 3D depth tunnel with responsive aerodynamic lift and wing banking. |
+| **Swoop & Level** | The dynamic camera motion that transitions from a high isometric reading angle down to an eye-level dive through a chapter's Polaroid portal, then arches back up into the newly unfolded chapter. |
+| **Chapter Divider** | Washi tape strips and sticker assets placed between chapters on the Scrapbook Surface as visual separators. |
+| **Cover Page** | The intro screen showing the cute craft-paper cover ("Our 1.4 Years Journey") featuring the interactive Origami Rocket, the couple Polaroid, and the "Click !" launch gateway. |
+| **Warm Craft Theme** | The cohesive visual aesthetic and color palette (warm off-white `#FAF4EB`, sunlit craft tones, soft pastel peach, and amber accents) applied across both the Cover Page and the 3D Scrapbook World. |
+| **Origami Rocket Launch** | The interactive opening mechanic where clicking the paper plane/rocket or "Click !" triggers an upward launch trajectory with an anticipation wiggle, soft whoosh SFX, and billowing smoke plume. |
+| **Smoke Cloud Screen Wipe** | The seamless full-screen transition where stylized white smoke plumes sweep outward from behind the launching rocket to momentarily cover the viewport and smoothly reveal Chapter 1 in 3D. |
+| **Page Block** | The layered deckled paper edges visible along the right and bottom sides of the closed Hardcover Scrapbook, giving it physical bulk and realism. |
+| **Ambient Dust Particles** | Floating warm golden light particles and subtle dust motes drifting across the Cover Page backdrop to create an intimate, nostalgic atmosphere. |
+| **Finale Page** | The final section containing the authentic handwritten stationery letter and the Relationship Timer, signed by Tanakrit Panichwattanacharoen. |
+| **Relationship Timer** | A real-time counter displaying years, months, days, and time since `startDateISO` in clean editorial typography. |
+| **New Year Fireworks Finale** | A grand multi-stage celebratory fireworks display resembling a New Year countdown celebration with spherical bursts, sparkling trails, and vibrant flash colors concluding Chapter 7 before unveiling the love letter. |
+| **BGM Crossfade** | The audio behavior where each chapter's background music fades in/out over ~1200ms as the camera enters/leaves its scroll zone. Managed by `useAudioCrossfade` hook via Howler.js. |
+| **Bottom-Edge Pivot** | The rotation rule for Paper Cutouts: the pivot point is at the bottom edge (y=0), not the center. The mesh is offset upward by half its height. Folded = `rotation.x = -π/2`, open = `rotation.x = 0`. |
+| **Scroll Zone** | The ScrollTrigger-defined region of vertical scroll progress mapped to a specific chapter. Entering a zone triggers pop-up open, BGM crossfade, and caption card appearance. |
+| **Dot Navigator** | A column of 7 small dots (HTML overlay) on the side of the screen indicating the current chapter and allowing click-to-jump navigation. |
+| **Neutral Daylight Lighting** | The 3D illumination system using pure white lights (`#FFFFFF`) to illuminate pop-up dioramas naturally without tinting photos or paper stages with artificial chapter colors. |
+| **Raw Photo Fidelity** | The rendering standard where personal photos on Paper Cutouts and Polaroids maintain 100% natural, unadulterated color matching source files using linear tone mapping and semi-gloss surfaces. |
+| **Strict Single-Chapter Isolation** | The display rule where only the currently active chapter (stage paper, pop-up cutouts, and polaroid) is rendered at rest, keeping all other chapters and their background planes 100% hidden. |
+| **Dive-Triggered Reveal** | The transition mechanic where an adjacent chapter's stage and 3D cutouts are unhidden only when the camera actively dives along the scroll progress path between chapters. |
+| **Journey Preloader** | The initial loading screen presented before the Cover Page, displaying a chronological relationship timeline progressing from 0m to 1.4y (0% to 100%) while preloading project images and audio into browser cache. |
+| **Paced Milestone Progression** | The deliberate time-paced pacing algorithm that advances the Journey Preloader through each chronological relationship milestone (0m through 1.4y) at a steady, observable rhythm (~250-300ms per step) regardless of instant local asset cache hits. |
+| **Continuous Milestone Glide** | The sub-pixel, frame-by-frame 60fps linear glide of the progress bar and mini Origami Airplane over an extended duration (~7.5–8.0 seconds), featuring aerodynamic bank/flutter motions and an expanded card canvas. |
+| **Preloader Rocket Smoke Wipe** | The seamless transition effect triggered upon Journey Preloader completion (reaching 1.4y), where the paper airplane/rocket surges upward and releases billowing white cloud plumes that momentarily blanket the viewport to unveil the Cover Screen. |
+| **Chapter BGM Mapping** | The explicit 1:1 binding between each chapter's scenic theme and its corresponding background music file in `/audio/music/`. |
+| **URL-Safe Audio Slug** | Standardized ASCII file identifiers (e.g., `bgm-kohkret.mp3`, `bgm-songwat.mp3`) mapped from raw/Thai filenames to ensure 100% reliable cross-platform playback across all browsers and static hosting environments. |
+| **Dual-Asset Preloading** | The asset caching pipeline in Journey Preloader that concurrently downloads and caches both high-resolution memory photos and audio soundtrack files before unveiling the scrapbook. |
+| **Synchronous Gesture Audio Unlock** | The direct invocation of the Web Audio context resume sequence within the user's initial "Click !" click event handler, guaranteeing immediate browser audio authorization before transitioning into Chapter 1. |
