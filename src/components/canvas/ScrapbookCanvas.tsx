@@ -35,18 +35,31 @@ function CameraRig({
   const currentY = useRef(targetY);
   const currentZ = useRef(targetZ);
   const currentLookAt = useRef(new THREE.Vector3(...lookAtTarget));
+  const currentMouseX = useRef(0);
+  const currentMouseY = useRef(0);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
+    // Smooth mouse-move parallax: slightly sway camera based on pointer
+    const targetMouseX = state.pointer.x * 0.45;
+    const targetMouseY = state.pointer.y * 0.22;
+    currentMouseX.current = THREE.MathUtils.damp(currentMouseX.current, targetMouseX, 2.5, delta);
+    currentMouseY.current = THREE.MathUtils.damp(currentMouseY.current, targetMouseY, 2.5, delta);
+
     // Smooth cinematic dampening for silky 60fps tracking
     currentY.current = THREE.MathUtils.damp(currentY.current, targetY, 4.5, delta);
     currentZ.current = THREE.MathUtils.damp(currentZ.current, targetZ, 4.5, delta);
 
-    currentLookAt.current.x = THREE.MathUtils.damp(currentLookAt.current.x, lookAtTarget[0], 4.5, delta);
+    currentLookAt.current.x = THREE.MathUtils.damp(
+      currentLookAt.current.x,
+      lookAtTarget[0] + currentMouseX.current * 0.15,
+      4.5,
+      delta
+    );
     currentLookAt.current.y = THREE.MathUtils.damp(currentLookAt.current.y, lookAtTarget[1], 4.5, delta);
     currentLookAt.current.z = THREE.MathUtils.damp(currentLookAt.current.z, lookAtTarget[2], 4.5, delta);
 
-    camera.position.x = 0;
-    camera.position.y = currentY.current;
+    camera.position.x = currentMouseX.current;
+    camera.position.y = currentY.current + currentMouseY.current;
     camera.position.z = currentZ.current;
     camera.lookAt(currentLookAt.current);
   });
@@ -78,11 +91,11 @@ function ScrapbookLighting({
 
   return (
     <>
-      <ambientLight intensity={0.92} color="#FFFFFF" />
+      <ambientLight intensity={1.15} color="#FFFFFF" />
       <directionalLight
         ref={lightRef}
         position={[5, 12, 8]}
-        intensity={1.2}
+        intensity={1.45}
         color="#FFFFFF"
         castShadow
         shadow-mapSize-width={2048}
@@ -95,8 +108,8 @@ function ScrapbookLighting({
         shadow-bias={-0.0005}
         shadow-normalBias={0.02}
       />
-      <directionalLight position={[-4, 6, -5]} intensity={0.35} color="#FFFFFF" />
-      <pointLight position={[0, 4, -4]} intensity={0.2} color="#FFFFFF" />
+      <directionalLight position={[-4, 6, -5]} intensity={0.45} color="#FFFFFF" />
+      <pointLight position={[0, 4, -4]} intensity={0.25} color="#FFFFFF" />
     </>
   );
 }
@@ -176,6 +189,25 @@ export default function ScrapbookCanvas() {
 
       {/* Sticky full-screen 3D viewport */}
       <div className="sticky top-0 w-full h-screen overflow-hidden">
+        {/* Warm Golden Sunbeams Overlay (Daylight God Rays) */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{
+            background:
+              'radial-gradient(ellipse 120% 80% at 92% 8%, rgba(255, 230, 160, 0.28) 0%, rgba(255, 210, 130, 0.12) 35%, transparent 70%)',
+            mixBlendMode: 'screen',
+          }}
+        />
+
+        {/* Cozy Warm Paper Vignette Overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{
+            background:
+              'radial-gradient(ellipse 75% 70% at 50% 50%, transparent 55%, rgba(55, 38, 22, 0.24) 100%)',
+          }}
+        />
+
         <Canvas
           shadows
           dpr={[1, 2]}
@@ -191,8 +223,8 @@ export default function ScrapbookCanvas() {
             position: [0, 8, 12],
           }}
         >
-          <color attach="background" args={['#F7F4EE']} />
-          <fog attach="fog" args={['#F7F4EE', 18, 42]} />
+          <color attach="background" args={['#EDE5D8']} />
+          <fog attach="fog" args={['#EDE5D8', 22, 55]} />
 
           {/* Dynamic "Swoop & Level" Depth Camera Rig */}
           <CameraRig
@@ -237,11 +269,11 @@ export default function ScrapbookCanvas() {
           {/* Soft Ground Contact Shadows following Camera Depth */}
           <ContactShadows
             position={[0, 0, currentChapter.baseZ]}
-            opacity={0.25}
+            opacity={0.45}
             scale={22}
-            blur={2.8}
-            far={5}
-            color="#6B4E38"
+            blur={2.2}
+            far={6}
+            color="#4A3320"
           />
         </Canvas>
 

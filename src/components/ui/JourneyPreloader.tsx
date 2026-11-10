@@ -89,6 +89,8 @@ export default function JourneyPreloader({ onComplete }: JourneyPreloaderProps) 
         ...CHAPTERS.flatMap((ch) => [
           ...ch.layers.map((l) => l.imageUrl),
           ch.polaroid.frontImageUrl,
+          ...(ch.prop.imageUrl ? [ch.prop.imageUrl] : []),
+          ...(ch.sceneryCutouts?.map((s) => s.imageUrl) || []),
         ]),
       ])
     );

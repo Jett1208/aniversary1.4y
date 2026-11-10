@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import PaperCutout from './PaperCutout';
+import SceneryCutout from './SceneryCutout';
 import InteractivePolaroid from './InteractivePolaroid';
 import InteractiveProp from './InteractiveProp';
 import type { ChapterConfig } from '../../data/chapters';
@@ -50,6 +51,25 @@ export default function ChapterScene({
             staggerDelay={index * 0.15}
             washiColor={layer.washiColor}
             washiAngle={layer.washiAngle}
+            hasSpotlight={layer.hasSpotlight}
+            spotlightOffset={layer.spotlightOffset}
+          />
+        ))}
+
+        {/* Environmental Scenery Cutouts (Landmarks, watercraft, ground props) */}
+        {chapter.sceneryCutouts?.map((scenery) => (
+          <SceneryCutout
+            key={scenery.id}
+            imageUrl={scenery.imageUrl}
+            width={scenery.scale[0]}
+            height={scenery.scale[1]}
+            position={scenery.position}
+            rotationZ={scenery.rotationZ}
+            isOpen={isActive}
+            foldProgress={foldProgress}
+            hasShadow={scenery.hasShadow}
+            animationType={scenery.animationType}
+            foldable={scenery.foldable}
           />
         ))}
 

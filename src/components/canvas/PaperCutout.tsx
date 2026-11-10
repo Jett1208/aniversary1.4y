@@ -30,6 +30,10 @@ interface PaperCutoutProps {
   castShadow?: boolean;
   /** Whether this cutout receives shadow */
   receiveShadow?: boolean;
+  /** Whether to mount a cute 3D gallery clip-on spotlight */
+  hasSpotlight?: boolean;
+  /** Horizontal offset of the spotlight along the top edge */
+  spotlightOffset?: number;
 }
 
 /**
@@ -56,6 +60,8 @@ export default function PaperCutout({
   borderWidth = 0.12,
   castShadow: shouldCastShadow = true,
   receiveShadow: shouldReceiveShadow = false,
+  hasSpotlight = false,
+  spotlightOffset = 0,
 }: PaperCutoutProps) {
   const groupRef = useRef<THREE.Group>(null);
   const pivotRef = useRef<THREE.Group>(null);
@@ -188,6 +194,46 @@ export default function PaperCutout({
             side={THREE.BackSide}
           />
         </mesh>
+
+        {/* 3D Vintage Brass Gallery Picture Spotlight */}
+        {hasSpotlight && (
+          <group position={[spotlightOffset, totalHeight, 0]}>
+            {/* 1. Brass Mounting Clip grasping the top frame */}
+            <mesh position={[0, -0.04, 0.015]} castShadow={shouldCastShadow}>
+              <boxGeometry args={[0.22, 0.09, 0.05]} />
+              <meshStandardMaterial color="#D4AF37" roughness={0.3} metalness={0.7} />
+            </mesh>
+
+            {/* 2. Curved Gooseneck Arm arching forward and down */}
+            <mesh position={[0, 0.08, 0.12]} rotation={[0.6, 0, 0]} castShadow={shouldCastShadow}>
+              <cylinderGeometry args={[0.02, 0.02, 0.28, 12]} />
+              <meshStandardMaterial color="#C59B27" roughness={0.35} metalness={0.75} />
+            </mesh>
+
+            {/* 3. Cylindrical Picture Lamp Hood */}
+            <group position={[0, 0.14, 0.24]} rotation={[0.4, 0, 0]}>
+              <mesh rotation={[0, 0, Math.PI / 2]} castShadow={shouldCastShadow}>
+                <cylinderGeometry args={[0.08, 0.08, 0.48, 16]} />
+                <meshStandardMaterial color="#E6C687" roughness={0.3} metalness={0.65} />
+              </mesh>
+
+              {/* Glowing Warm Light Bar underneath hood */}
+              <mesh position={[0, -0.05, 0]}>
+                <boxGeometry args={[0.38, 0.03, 0.06]} />
+                <meshBasicMaterial color="#FFF9E6" />
+              </mesh>
+
+              {/* Focused Warm Sunlight Spotlight illuminating the photo */}
+              <pointLight
+                position={[0, -0.08, 0.05]}
+                intensity={3.6}
+                distance={4.8}
+                color="#FFF5DB"
+                decay={2}
+              />
+            </group>
+          </group>
+        )}
       </group>
     </group>
   );

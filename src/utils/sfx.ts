@@ -77,6 +77,48 @@ class SoundManager {
     osc.stop(ctx.currentTime + 0.4);
   }
 
+  // Play a crisp vintage twin-ding bicycle bell ("กริ๊งๆ!")
+  public playBicycleBell() {
+    if (this.isMuted) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const playStrike = (time: number, freq: number, duration: number, gainVal: number) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, time);
+
+      const overtone = ctx.createOscillator();
+      const overtoneGain = ctx.createGain();
+      overtone.type = 'sine';
+      overtone.frequency.setValueAtTime(freq * 2.03, time);
+
+      gain.gain.setValueAtTime(gainVal, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+      overtoneGain.gain.setValueAtTime(gainVal * 0.45, time);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.0005, time + duration * 0.7);
+
+      osc.connect(gain);
+      overtone.connect(overtoneGain);
+      gain.connect(ctx.destination);
+      overtoneGain.connect(ctx.destination);
+
+      osc.start(time);
+      osc.stop(time + duration);
+      overtone.start(time);
+      overtone.stop(time + duration * 0.7);
+    };
+
+    const t = ctx.currentTime;
+    // First ring: ~2093 Hz (C7)
+    playStrike(t, 2093, 0.28, 0.26);
+    // Second ring: ~2349 Hz (D7)
+    playStrike(t + 0.11, 2349, 0.55, 0.28);
+  }
+
   // Camera shutter click
   public playShutter() {
     if (this.isMuted) return;

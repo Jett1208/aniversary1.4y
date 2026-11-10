@@ -8,6 +8,8 @@ export interface LayerAsset {
   scale: [number, number]; // [width, height] in 3D units
   washiColor?: string;
   washiAngle?: number;
+  hasSpotlight?: boolean;
+  spotlightOffset?: number;
 }
 
 export interface PolaroidSecret {
@@ -24,7 +26,8 @@ export type PropActionType =
   | 'duck-paddle'
   | 'tea-clink'
   | 'lake-lights'
-  | 'fireworks';
+  | 'fireworks'
+  | 'bicycle-ride';
 
 export interface InteractivePropConfig {
   id: string;
@@ -32,6 +35,20 @@ export interface InteractivePropConfig {
   hintText: string;
   position: [number, number, number];
   label: string;
+  imageUrl?: string;
+  scale?: [number, number]; // [width, height] in 3D units
+  rotationZ?: number;
+}
+
+export interface SceneryCutoutConfig {
+  id: string;
+  imageUrl: string;
+  position: [number, number, number];
+  scale: [number, number];
+  rotationZ?: number;
+  hasShadow?: boolean;
+  animationType?: 'none' | 'water-bob' | 'gentle-breeze';
+  foldable?: boolean;
 }
 
 export interface ChapterConfig {
@@ -48,6 +65,7 @@ export interface ChapterConfig {
   layers: LayerAsset[];
   polaroid: PolaroidSecret;
   prop: InteractivePropConfig;
+  sceneryCutouts?: SceneryCutoutConfig[];
 }
 
 export interface AnniversaryMetadata {
@@ -91,6 +109,8 @@ export const CHAPTERS: ChapterConfig[] = [
         scale: [2.2, 2.8],
         washiColor: '#FBBF24',
         washiAngle: -15,
+        hasSpotlight: true,
+        spotlightOffset: -0.35,
       },
       {
         id: 'ch1-photo-2',
@@ -101,31 +121,86 @@ export const CHAPTERS: ChapterConfig[] = [
         scale: [2.5, 3.2],
         washiColor: '#F472B6',
         washiAngle: 12,
+        hasSpotlight: true,
+        spotlightOffset: 0.0,
       },
       {
         id: 'ch1-photo-3',
         imageUrl: '/images/ch1-kohkret/photo-3.png',
-        xOffset: 1.9,
+        xOffset: 2.15,
         zOffset: 0.6,
         rotationZ: -0.04,
         scale: [2.1, 2.6],
         washiColor: '#60A5FA',
         washiAngle: -8,
+        hasSpotlight: true,
+        spotlightOffset: 0.35,
       },
     ],
     polaroid: {
       frontImageUrl: '/images/ch1-kohkret/polaroid.png',
       backNote: 'รูปนี้จำได้ไหม? อากาศร้อนมากแต่ก็ยังยิ้มแป้น น่ารักที่สุดเลย 🍦',
-      position: [3.4, 0.05, 0.8],
-      rotationZ: 0.12,
+      position: [3.15, 0.05, 1.55],
+      rotationZ: 0.08,
     },
     prop: {
       id: 'ch1-prop',
-      actionType: 'pottery-spin',
-      hintText: 'ลองแตะที่จักรยานปั่นริมน้ำดูสิ!',
-      position: [-3.2, 0.1, 0.5],
-      label: '🚲 หมุนจักรยาน',
+      actionType: 'bicycle-ride',
+      hintText: 'แตะที่จักรยานปั่นริมน้ำเพื่อกดกริ่ง กริ๊งๆ! 🚲',
+      position: [-3.55, 0, 1.15],
+      label: '🚲 กริ่งจักรยาน',
+      imageUrl: '/images/ch1-kohkret/props/bicycle.png',
+      scale: [2.25, 1.37],
+      rotationZ: 0.02,
     },
+    sceneryCutouts: [
+      {
+        id: 'ch1-scenery-pagoda',
+        imageUrl: '/images/ch1-kohkret/props/kohkret.png',
+        position: [-2.8, 0, -2.4],
+        scale: [8.0, 6.32],
+        rotationZ: 0.0,
+        hasShadow: false,
+        foldable: true,
+      },
+      {
+        id: 'ch1-scenery-boat',
+        imageUrl: '/images/ch1-kohkret/props/boat.png',
+        position: [4.35, 0, 1.2],
+        scale: [2.4, 1.28],
+        rotationZ: -0.06,
+        hasShadow: true,
+        animationType: 'water-bob',
+        foldable: true,
+      },
+      {
+        id: 'ch1-scenery-pottery',
+        imageUrl: '/images/ch1-kohkret/props/pottery.png',
+        position: [-2.55, 0, 1.4],
+        scale: [1.05, 0.94],
+        rotationZ: 0.03,
+        hasShadow: true,
+        foldable: true,
+      },
+      {
+        id: 'ch1-scenery-cloud-warm',
+        imageUrl: '/images/ch1-kohkret/props/cloud-warm.png',
+        position: [3.2, 3.8, -2.2],
+        scale: [3.6, 1.62],
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+      {
+        id: 'ch1-scenery-cloud-blue',
+        imageUrl: '/images/ch1-kohkret/props/cloud-blue.png',
+        position: [1.6, 4.5, -2.6],
+        scale: [2.8, 1.37],
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+    ],
   },
   {
     id: 'ch2-songwat',
@@ -142,47 +217,113 @@ export const CHAPTERS: ChapterConfig[] = [
       {
         id: 'ch2-photo-1',
         imageUrl: '/images/ch2-songwat/photo-1.png',
-        xOffset: -1.7,
-        zOffset: -0.6,
+        xOffset: -1.8,
+        zOffset: -0.7,
         rotationZ: 0.05,
         scale: [2.2, 2.8],
         washiColor: '#FB923C',
         washiAngle: 10,
+        hasSpotlight: true,
+        spotlightOffset: -0.3,
       },
       {
         id: 'ch2-photo-2',
         imageUrl: '/images/ch2-songwat/photo-2.jpg',
-        xOffset: 0.3,
-        zOffset: 0.2,
+        xOffset: 0.2,
+        zOffset: 0.1,
         rotationZ: -0.04,
         scale: [2.6, 3.3],
         washiColor: '#A78BFA',
         washiAngle: -12,
+        hasSpotlight: true,
+        spotlightOffset: 0.0,
       },
       {
         id: 'ch2-photo-3',
         imageUrl: '/images/ch2-songwat/photo-3.jpg',
-        xOffset: 2.0,
-        zOffset: 0.5,
+        xOffset: 2.15,
+        zOffset: 0.6,
         rotationZ: 0.06,
         scale: [2.0, 2.5],
         washiColor: '#34D399',
         washiAngle: 15,
+        hasSpotlight: true,
+        spotlightOffset: 0.3,
       },
     ],
     polaroid: {
       frontImageUrl: '/images/ch2-songwat/polaroid.jpg',
       backNote: 'มุมนี้เท่มาก แสงกำลังสวยพอดีเลย ชอบลุคนี้ของเธอมากๆ 📸',
-      position: [3.3, 0.05, 0.7],
-      rotationZ: -0.09,
+      position: [3.15, 0.05, 1.55],
+      rotationZ: -0.07,
     },
     prop: {
       id: 'ch2-prop',
       actionType: 'camera-flash',
-      hintText: 'แตะที่กล้องเพื่อกดชัตเตอร์แฟลช!',
-      position: [-3.0, 0.1, 0.4],
+      hintText: 'แตะที่กล้องฟิล์มเพื่อกดชัตเตอร์แฟลช! 📸',
+      position: [-3.45, 0, 1.1],
       label: '📷 กดแชะกล้อง',
+      imageUrl: '/images/ch2-songwat/props/camera.png',
+      scale: [2.35, 1.49],
+      rotationZ: 0.02,
     },
+    sceneryCutouts: [
+      {
+        id: 'ch2-scenery-building',
+        imageUrl: '/images/ch2-songwat/props/building.png',
+        position: [-3.0, 0, -2.4],
+        scale: [5.5, 5.6],
+        rotationZ: 0.0,
+        hasShadow: false,
+        foldable: true,
+      },
+      {
+        id: 'ch2-scenery-cassette',
+        imageUrl: '/images/ch2-songwat/props/cassette.png',
+        position: [-2.25, 0, 1.35],
+        scale: [1.3, 1.27],
+        rotationZ: 0.06,
+        hasShadow: true,
+        foldable: true,
+      },
+      {
+        id: 'ch2-scenery-newspaper',
+        imageUrl: '/images/ch2-songwat/props/newspaper.png',
+        position: [4.55, 0, 1.15],
+        scale: [2.2, 2.14],
+        rotationZ: -0.08,
+        hasShadow: true,
+        foldable: true,
+      },
+      {
+        id: 'ch2-scenery-butterfly',
+        imageUrl: '/images/ch2-songwat/props/butterfly.png',
+        position: [4.1, 2.3, 1.35],
+        scale: [1.15, 0.98],
+        rotationZ: 0.12,
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+      {
+        id: 'ch2-scenery-cloud-warm',
+        imageUrl: '/images/ch2-songwat/props/cloud-warm.png',
+        position: [3.2, 4.0, -2.2],
+        scale: [3.6, 1.62],
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+      {
+        id: 'ch2-scenery-cloud-teal',
+        imageUrl: '/images/ch2-songwat/props/cloud-teal.png',
+        position: [1.5, 4.6, -2.6],
+        scale: [2.8, 1.7],
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+    ],
   },
   {
     id: 'ch3-taladnoi',
@@ -205,41 +346,117 @@ export const CHAPTERS: ChapterConfig[] = [
         scale: [2.2, 2.7],
         washiColor: '#F87171',
         washiAngle: -10,
+        hasSpotlight: true,
+        spotlightOffset: -0.3,
       },
       {
         id: 'ch3-photo-2',
         imageUrl: '/images/ch3-taladnoi/photo-2.jpg',
-        xOffset: 0.1,
+        xOffset: 0.15,
         zOffset: 0.1,
         rotationZ: 0.03,
         scale: [2.5, 3.2],
         washiColor: '#FBBF24',
         washiAngle: 8,
+        hasSpotlight: true,
+        spotlightOffset: 0.0,
       },
       {
         id: 'ch3-photo-3',
         imageUrl: '/images/ch3-taladnoi/photo-3.jpg',
-        xOffset: 1.8,
+        xOffset: 2.15,
         zOffset: 0.6,
         rotationZ: -0.05,
         scale: [2.1, 2.6],
         washiColor: '#4ADE80',
         washiAngle: -14,
+        hasSpotlight: true,
+        spotlightOffset: 0.3,
       },
     ],
     polaroid: {
       frontImageUrl: '/images/ch3-taladnoi/polaroid.jpg',
       backNote: 'รถคันนี้สีเหมือนเธอตอนแก้มส้มๆ เลย น่ารักสดใสสุดๆ 🚗',
-      position: [3.4, 0.05, 0.8],
-      rotationZ: 0.14,
+      position: [3.15, 0.05, 1.55],
+      rotationZ: 0.08,
     },
     prop: {
       id: 'ch3-prop',
       actionType: 'car-honk',
-      hintText: 'ลองแตะที่รถเฟียตดูสิ!',
-      position: [-3.1, 0.1, 0.5],
+      hintText: 'แตะที่รถคลาสสิกเพื่อกดบีบแตร ปี๊นๆ! 🚗',
+      position: [-3.45, 0, 1.1],
       label: '🚗 บีบแตรเฟียต',
+      imageUrl: '/images/ch3-taladnoi/props/car.png',
+      scale: [2.65, 1.54],
+      rotationZ: 0.02,
     },
+    sceneryCutouts: [
+      {
+        id: 'ch3-scenery-tree',
+        imageUrl: '/images/ch3-taladnoi/props/tree.png',
+        position: [-3.0, 0, -2.3],
+        scale: [4.2, 4.4],
+        rotationZ: 0.0,
+        hasShadow: false,
+        foldable: true,
+      },
+      {
+        id: 'ch3-scenery-controller',
+        imageUrl: '/images/ch3-taladnoi/props/controller.png',
+        position: [4.45, 0, 1.15],
+        scale: [2.0, 1.35],
+        rotationZ: -0.06,
+        hasShadow: true,
+        foldable: true,
+      },
+      {
+        id: 'ch3-scenery-pixel-heart',
+        imageUrl: '/images/ch3-taladnoi/props/pixel-heart.png',
+        position: [4.1, 2.2, 1.35],
+        scale: [0.92, 0.85],
+        rotationZ: 0.08,
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+      {
+        id: 'ch3-scenery-hp-bar',
+        imageUrl: '/images/ch3-taladnoi/props/hp-bar.png',
+        position: [4.1, 1.65, 1.35],
+        scale: [1.85, 0.33],
+        rotationZ: -0.03,
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+      {
+        id: 'ch3-scenery-cloud-warm',
+        imageUrl: '/images/ch3-taladnoi/props/cloud-warm.png',
+        position: [3.2, 4.0, -2.2],
+        scale: [3.6, 1.62],
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+      {
+        id: 'ch3-scenery-cloud-teal',
+        imageUrl: '/images/ch3-taladnoi/props/cloud-teal.png',
+        position: [1.5, 4.6, -2.6],
+        scale: [2.8, 1.7],
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+      {
+        id: 'ch3-scenery-coin',
+        imageUrl: '/images/ch3-taladnoi/props/coin.png',
+        position: [3.8, 3.2, -1.8],
+        scale: [0.85, 0.85],
+        hasShadow: false,
+        animationType: 'gentle-breeze',
+        foldable: false,
+      },
+    ],
   },
   {
     id: 'ch4-lumphini',
