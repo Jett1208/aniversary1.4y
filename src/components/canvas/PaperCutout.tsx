@@ -142,6 +142,7 @@ export default function PaperCutout({
           position={[0, totalHeight / 2, -0.005]}
           castShadow={shouldCastShadow}
           receiveShadow={shouldReceiveShadow}
+          renderOrder={10}
         >
           <planeGeometry args={[totalWidth, totalHeight]} />
           <meshStandardMaterial
@@ -156,6 +157,7 @@ export default function PaperCutout({
         <mesh
           position={[0, totalHeight / 2, 0]}
           castShadow={shouldCastShadow}
+          renderOrder={10}
         >
           <planeGeometry args={[width, height]} />
           <meshStandardMaterial
@@ -166,10 +168,11 @@ export default function PaperCutout({
           />
         </mesh>
 
-        {/* Washi tape accent at the top of the card */}
+        {/* Washi tape accent at the top edge of the card (grasps the top white frame, clean of photo) */}
         <mesh
-          position={[0, totalHeight - 0.15, 0.01]}
+          position={[0, totalHeight - 0.05, 0.01]}
           rotation={[0, 0, (washiAngle * Math.PI) / 180]}
+          renderOrder={15}
         >
           <planeGeometry args={[totalWidth * 0.5, 0.18]} />
           <meshStandardMaterial
@@ -185,6 +188,7 @@ export default function PaperCutout({
         {/* Card back — slightly darker paper visible when viewed from behind */}
         <mesh
           position={[0, totalHeight / 2, -0.01]}
+          renderOrder={10}
         >
           <planeGeometry args={[totalWidth, totalHeight]} />
           <meshStandardMaterial
@@ -199,26 +203,26 @@ export default function PaperCutout({
         {hasSpotlight && (
           <group position={[spotlightOffset, totalHeight, 0]}>
             {/* 1. Brass Mounting Clip grasping the top frame */}
-            <mesh position={[0, -0.04, 0.015]} castShadow={shouldCastShadow}>
+            <mesh position={[0, -0.04, 0.015]} castShadow={shouldCastShadow} renderOrder={20}>
               <boxGeometry args={[0.22, 0.09, 0.05]} />
               <meshStandardMaterial color="#D4AF37" roughness={0.3} metalness={0.7} />
             </mesh>
 
             {/* 2. Curved Gooseneck Arm arching forward and down */}
-            <mesh position={[0, 0.08, 0.12]} rotation={[0.6, 0, 0]} castShadow={shouldCastShadow}>
+            <mesh position={[0, 0.08, 0.12]} rotation={[0.6, 0, 0]} castShadow={shouldCastShadow} renderOrder={20}>
               <cylinderGeometry args={[0.02, 0.02, 0.28, 12]} />
               <meshStandardMaterial color="#C59B27" roughness={0.35} metalness={0.75} />
             </mesh>
 
             {/* 3. Cylindrical Picture Lamp Hood */}
             <group position={[0, 0.14, 0.24]} rotation={[0.4, 0, 0]}>
-              <mesh rotation={[0, 0, Math.PI / 2]} castShadow={shouldCastShadow}>
+              <mesh rotation={[0, 0, Math.PI / 2]} castShadow={shouldCastShadow} renderOrder={20}>
                 <cylinderGeometry args={[0.08, 0.08, 0.48, 16]} />
                 <meshStandardMaterial color="#E6C687" roughness={0.3} metalness={0.65} />
               </mesh>
 
               {/* Glowing Warm Light Bar underneath hood */}
-              <mesh position={[0, -0.05, 0]}>
+              <mesh position={[0, -0.05, 0]} renderOrder={20}>
                 <boxGeometry args={[0.38, 0.03, 0.06]} />
                 <meshBasicMaterial color="#FFF9E6" />
               </mesh>

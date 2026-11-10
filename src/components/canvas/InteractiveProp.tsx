@@ -44,8 +44,8 @@ function DieCutIllustratedMesh({
     canvas.height = 128;
     const ctx = canvas.getContext('2d')!;
     const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 60);
-    gradient.addColorStop(0, 'rgba(60, 42, 24, 0.45)');
-    gradient.addColorStop(0.5, 'rgba(60, 42, 24, 0.18)');
+    gradient.addColorStop(0, 'rgba(40, 25, 15, 0.7)');
+    gradient.addColorStop(0.5, 'rgba(50, 32, 20, 0.35)');
     gradient.addColorStop(1, 'rgba(60, 42, 24, 0)');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 128, 128);
@@ -60,13 +60,13 @@ function DieCutIllustratedMesh({
       <mesh
         position={[0, 0.005, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
-        scale={[width * 0.95, 0.42, 1]}
+        scale={[width * 1.05, 0.62, 1]}
       >
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial
           map={shadowTexture}
           transparent
-          opacity={0.7}
+          opacity={0.88}
           depthWrite={false}
         />
       </mesh>
@@ -77,6 +77,7 @@ function DieCutIllustratedMesh({
         position={[0, height / 2, 0]}
         castShadow
         receiveShadow
+        renderOrder={12}
         scale={hovered ? [1.06, 1.06, 1.06] : [1, 1, 1]}
       >
         <planeGeometry args={[width, height]} />

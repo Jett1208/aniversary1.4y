@@ -219,22 +219,7 @@ export default function ScrapbookSurface({ isChapterVisible }: ScrapbookSurfaceP
               />
             </mesh>
 
-            {/* 7. Cute Corner Washi Tapes */}
-            {/* Top-Left Corner Tape */}
-            <mesh
-              rotation={[-Math.PI / 2, 0, 0.55]}
-              position={[-6.2, 0.005, -5.4]}
-            >
-              <planeGeometry args={[1.5, 0.5]} />
-              <meshStandardMaterial
-                color={chapter.themeColor}
-                roughness={0.5}
-                transparent
-                opacity={0.85}
-              />
-            </mesh>
-
-            {/* Bottom-Right Corner Tape */}
+            {/* 7. Cute Corner Washi Tape (Bottom-Right Stage Anchor) */}
             <mesh
               rotation={[-Math.PI / 2, 0, -0.45]}
               position={[6.2, 0.005, 5.4]}

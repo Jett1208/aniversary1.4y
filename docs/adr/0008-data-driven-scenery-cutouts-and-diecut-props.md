@@ -67,10 +67,20 @@ Hardcoding these props directly into Chapter 1 would prevent reuse across other 
    - **Tier 3 (Foreground Wings)**: Upgraded `InteractiveProp` to a vintage rangefinder camera (`camera.png` at `[-3.45, 0, 1.1]`) paired with a cassette tape (`cassette.png` at `[-2.25, 0, 1.35]`) on the left, and vintage newsprint pages (`newspaper.png` at `[4.55, 0, 1.15]`) with a fluttering paper butterfly (`butterfly.png` elevated at `[4.1, 2.3, 1.35]`) hovering freely in front on the right.
    - **Interactive Tactile Haptics**: Enhanced `camera-flash` action with a high-intensity 3D sunlight burst (`intensity: 18`), spring recoil bounce, and floating `📸 🎞️ 💖` particles.
 
-9. **Extension to Chapter 3 (Talad Noi - รถเฟียตส้ม & กำแพงกราฟฟิตี้)**:
-   - **Tier 1 (Street Art Backdrop & Skyline)**: Deployed the 8-bit street art tree (`tree.png` at `[-3.0, 0, -2.3]`, scale `[4.2, 4.4]`) on the left, counterbalanced by floating watercolor clouds and an arcade gold coin (`coin.png`) glinting in the sky.
-   - **Tier 2 (Core Memories)**: Configured 3D brass gallery picture spotlights on all 3 Talad Noi photo cards (`hasSpotlight: true`).
-   - **Tier 3 (Foreground Wings)**: Upgraded `InteractiveProp` to the classic vintage sedan (`car.png` at `[-3.45, 0, 1.1]`, scale `[2.65, 1.54]`) with playful suspension squish-bounce, horn sound `sfx.playHonk()`, and floating `🚗 💨 💖 🎶` particles. Paired with a retro game controller (`controller.png` at `[4.45, 0, 1.15]`), an elevated 8-bit pixel heart (`pixel-heart.png` at `[4.1, 2.2, 1.35]`), and full HP bar (`hp-bar.png` at `[4.1, 1.65, 1.35]`) celebrating "House of Retro Modern".
+9. **Extension & Aesthetic Overhaul for Chapter 3 (Talad Noi - รถเฟียตส้ม & กำแพงกราฟฟิตี้)**:
+   - **Tier 1 (Panoramic Watercolor Architectural Backdrop & Skyline Polish)**:
+     - Replaced the isolated 8-bit pixel tree with an enlarged panoramic watercolor Talad Noi streetscape cutout (`backdrop.png` at `[-0.2, 0.2, -2.8]`, scaled up 15% to `[10.1, 5.6]`) showcasing historic Chinese shophouses, traditional red lanterns, and dragon street art murals. The wider, elevated framing keeps the "ตลาดน้อย" signage and lanterns unobstructed by photos while masking the straight tabletop horizon.
+     - Repositioned the white-bordered arcade coin sticker (`coin-sticker.png`) to `[4.5, 3.8, -1.8]`, providing ample ceiling clearance away from the shophouse roofline and nestling naturally under the warm watercolor cloud.
+   - **White Paper Sticker Outline Pipeline**: Implemented a morphological alpha dilation pass generating crisp ~14px white paper sticker borders around all mixed-media elements (`pixel-heart-sticker.png`, `hp-bar-sticker.png`, `coin-sticker.png`, `controller-sticker.png`), seamlessly harmonizing retro arcade pixel art and 3D renders into a cohesive physical handmade scrapbook aesthetic.
+   - **Three.js Explicit Render Order & Transparency Sorting**:
+     - Enforced deterministic rendering order across components: `renderOrder: 1` (Backdrops & Sky cutouts, $Z \le -2.0$), `renderOrder: 10` (Photo cards and backing sheets), `renderOrder: 12` (Foreground interactive props and scenery), `renderOrder: 15` (Washi tape accents), and `renderOrder: 20` (3D brass gallery spotlights).
+     - Pushed the backdrop back to $Z = -2.8$, mathematically eliminating all transparency sorting glitches where the backdrop pierced through brass clips or top washi tape.
+   - **Stage Surface Cleanliness**: Removed the awkward top-left corner stage tape from `ScrapbookSurface.tsx`, eliminating the floating pink strip above the car badge.
+   - **Frame-Clear Washi Tape Elevation**: Raised washi tape anchoring in `PaperCutout.tsx` to `totalHeight - 0.05` so the tape rests strictly on the top white margin, ensuring zero clipping or obscuring over faces/foreheads even in tight photo crops.
+   - **Unobstructed Sightline Staging**:
+     - Shifted left photo `ch3-photo-1` outward (`xOffset: -2.25, zOffset: -0.75, rotationZ: -0.08`) and the classic car leftward (`position: [-3.65, 0, 1.25]`) to fully expose the couple in the photo.
+     - Shifted the game controller and status meters rightward (`position: [4.7, 0, 1.15]`) to eliminate overlap with the lying Polaroid plaque on the right page.
+   - **Ground Contact Drop Shadows**: Darkened and widened ground contact shadows (`opacity: 0.88`, `rgba(40, 25, 15, 0.7)`, scale `width * 1.05`) in `InteractiveProp.tsx` and `SceneryCutout.tsx`, firmly grounding the classic car and controller to the scrapbook floor.
 
 ## Consequences
 - **Vastly Superior Ambiance**: Chapters 1, 2 & 3 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.

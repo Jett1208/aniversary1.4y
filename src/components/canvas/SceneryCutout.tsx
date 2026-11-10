@@ -58,8 +58,8 @@ export default function SceneryCutout({
     canvas.height = 128;
     const ctx = canvas.getContext('2d')!;
     const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 60);
-    gradient.addColorStop(0, 'rgba(60, 42, 24, 0.35)');
-    gradient.addColorStop(0.5, 'rgba(60, 42, 24, 0.15)');
+    gradient.addColorStop(0, 'rgba(40, 25, 15, 0.7)');
+    gradient.addColorStop(0.5, 'rgba(50, 32, 20, 0.35)');
     gradient.addColorStop(1, 'rgba(60, 42, 24, 0)');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 128, 128);
@@ -119,6 +119,9 @@ export default function SceneryCutout({
     });
   }, [isOpen, foldable, foldProgress, hasAnimated]);
 
+  // Explicit Render Order: Tier 1 Backdrops & Sky cutouts render first, foreground elements render after photos
+  const sceneryRenderOrder = position[2] <= -2.0 ? 1 : 12;
+
   return (
     <group position={position} rotation={[0, 0, rotationZ]}>
       {/* Soft ground contact shadow */}
@@ -126,13 +129,14 @@ export default function SceneryCutout({
         <mesh
           position={[0, 0.005, 0]}
           rotation={[-Math.PI / 2, 0, 0]}
-          scale={[width * 0.92, 0.45, 1]}
+          scale={[width * 1.05, 0.62, 1]}
+          renderOrder={sceneryRenderOrder}
         >
           <planeGeometry args={[1, 1]} />
           <meshBasicMaterial
             map={shadowTexture}
             transparent
-            opacity={0.65}
+            opacity={0.85}
             depthWrite={false}
           />
         </mesh>
@@ -145,6 +149,7 @@ export default function SceneryCutout({
           position={[0, height / 2, 0]}
           castShadow
           receiveShadow
+          renderOrder={sceneryRenderOrder}
         >
           <planeGeometry args={[width, height]} />
           <meshStandardMaterial
