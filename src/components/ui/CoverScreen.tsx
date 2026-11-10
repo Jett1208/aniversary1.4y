@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ANNIVERSARY_META } from '../../data/chapters';
 import { sfx } from '../../utils/sfx';
 import CuteAmbientParticles from './CuteAmbientParticles';
@@ -9,16 +9,28 @@ interface CoverScreenProps {
   onUnlockAudio?: () => void;
 }
 
+const HOLD_DURATION_MS = 1100;
+const CIRCLE_RADIUS = 74;
+const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
+
 /**
  * 3D Origami Paper Rocket / Airplane Component (Matching User Sketch 1 & 2)
  */
-function OrigamiPaperRocket({ isLaunching }: { isLaunching: boolean }) {
+function OrigamiPaperRocket({
+  isLaunching,
+  isHolding,
+}: {
+  isLaunching: boolean;
+  isHolding: boolean;
+}) {
   return (
     <div
-      className={`relative cursor-pointer transition-transform duration-700 select-none ${
+      className={`relative select-none transition-transform duration-300 ${
         isLaunching
-          ? '-translate-y-[140vh] scale-125 ease-in'
-          : 'hover:scale-105 active:scale-95 animate-gentle-float'
+          ? '-translate-y-[140vh] scale-125 ease-in duration-700'
+          : isHolding
+          ? 'scale-110 drop-shadow-[0_16px_32px_rgba(245,158,11,0.35)]'
+          : 'hover:scale-105 animate-gentle-float'
       }`}
       style={{
         transitionTimingFunction: isLaunching ? 'cubic-bezier(0.45, 0, 0.2, 1)' : undefined,
@@ -26,7 +38,7 @@ function OrigamiPaperRocket({ isLaunching }: { isLaunching: boolean }) {
     >
       <svg
         viewBox="0 0 120 160"
-        className="w-24 h-32 sm:w-28 sm:h-36 drop-shadow-[0_12px_24px_rgba(70,45,25,0.22)]"
+        className="w-28 h-36 sm:w-32 sm:h-40 drop-shadow-[0_14px_28px_rgba(70,45,25,0.22)]"
         fill="none"
       >
         {/* Soft shadow cast by the airplane on the card */}
@@ -60,42 +72,93 @@ function OrigamiPaperRocket({ isLaunching }: { isLaunching: boolean }) {
 }
 
 export default function CoverScreen({ onOpenBook, onDismiss, onUnlockAudio }: CoverScreenProps) {
-  const [launchStage, setLaunchStage] = useState<'idle' | 'ignite' | 'launching' | 'clearing'>(
-    'idle'
-  );
+  const [launchStage, setLaunchStage] = useState<'idle' | 'ignite' | 'launching' | 'clearing'>('idle');
+  const [holdProgress, setHoldProgress] = useState(0);
+  const [isHolding, setIsHolding] = useState(false);
 
-  const handleLaunch = () => {
+  const holdStartRef = useRef<number | null>(null);
+  const animFrameRef = useRef<number | null>(null);
+
+  // Trigger the launch sequence once hold requirement is satisfied
+  const triggerLaunch = useCallback(() => {
     if (launchStage !== 'idle') return;
 
-    // Immediately unlock browser audio context synchronously on user click
     if (onUnlockAudio) {
       onUnlockAudio();
     }
 
-    // Play synthesized rocket whoosh SFX
     sfx.playRocketWhoosh();
-
-    // Stage 1: Quick playful anticipation wiggle
     setLaunchStage('ignite');
 
     setTimeout(() => {
-      // Stage 2: Rocket shoots straight up + white smoke plumes explode outward
       setLaunchStage('launching');
     }, 120);
 
     setTimeout(() => {
-      // Stage 3: Screen is fully blanketed by white clouds -> trigger 3D mount & audio unlock
       onOpenBook();
       setLaunchStage('clearing');
     }, 750);
 
     setTimeout(() => {
-      // Stage 4: Smoke fully dissipated -> unmount cover cleanly
       if (onDismiss) {
         onDismiss();
       }
     }, 1450);
-  };
+  }, [launchStage, onUnlockAudio, onOpenBook, onDismiss]);
+
+  const startHold = useCallback(
+    (e?: React.SyntheticEvent) => {
+      if (e) {
+        // Prevent default touch scrolling/long-press menu
+        if (e.cancelable) e.preventDefault();
+      }
+      if (launchStage !== 'idle') return;
+
+      if (onUnlockAudio) {
+        onUnlockAudio();
+      }
+
+      setIsHolding(true);
+      holdStartRef.current = performance.now();
+
+      const tick = (now: number) => {
+        if (!holdStartRef.current) return;
+        const elapsed = now - holdStartRef.current;
+        const progress = Math.min(100, (elapsed / HOLD_DURATION_MS) * 100);
+        setHoldProgress(progress);
+
+        if (progress >= 100) {
+          setIsHolding(false);
+          holdStartRef.current = null;
+          triggerLaunch();
+        } else {
+          animFrameRef.current = requestAnimationFrame(tick);
+        }
+      };
+
+      animFrameRef.current = requestAnimationFrame(tick);
+    },
+    [launchStage, onUnlockAudio, triggerLaunch]
+  );
+
+  const endHold = useCallback(() => {
+    if (launchStage !== 'idle') return;
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    holdStartRef.current = null;
+    setIsHolding(false);
+    setHoldProgress(0);
+  }, [launchStage]);
+
+  useEffect(() => {
+    return () => {
+      if (animFrameRef.current) {
+        cancelAnimationFrame(animFrameRef.current);
+      }
+    };
+  }, []);
 
   const isLaunching = launchStage === 'launching' || launchStage === 'clearing';
   const isClearing = launchStage === 'clearing';
@@ -111,75 +174,137 @@ export default function CoverScreen({ onOpenBook, onDismiss, onUnlockAudio }: Co
           : `radial-gradient(circle at 50% 40%, rgba(255, 238, 217, 0.75) 0%, rgba(246, 235, 220, 0.95) 70%, #E8DAC8 100%)`,
       }}
     >
+      {/* Cover Background Video (Ambient Looping Wallpaper) */}
+      <div
+        className={`absolute inset-0 z-0 overflow-hidden pointer-events-none transition-opacity duration-700 ${
+          isClearing ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
+          src="/video/Background.mp4"
+        />
+      </div>
+
       {/* Floating cozy pastel dust motes */}
       {!isClearing && <CuteAmbientParticles />}
 
-      {/* Main Cute Postcard / Craft Card (Matching User Sketch 1) */}
+      {/* Main Solid Warm Cream Craft Card Container */}
       <div
         className={`relative z-20 w-full max-w-sm sm:max-w-md transition-all duration-600 ${
           isLaunching ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'
         }`}
       >
-        {/* Soft Card Shadow */}
+        {/* Soft Ambient Card Glow & Shadow for clean contrast against bright meadow */}
         <div
-          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 bg-[#7A5A40]/15 blur-xl rounded-full pointer-events-none"
+          className="absolute -inset-4 bg-amber-950/15 rounded-[36px] blur-2xl pointer-events-none"
           aria-hidden="true"
         />
 
-        {/* Pastel Craft Envelope / Postcard Container */}
-        <div className="relative w-full bg-[#FFFDF9] border border-[#EADBCC] rounded-3xl p-6 sm:p-9 shadow-[0_15px_35px_rgba(95,65,40,0.08),0_2px_8px_rgba(95,65,40,0.04)] text-center overflow-hidden">
+        {/* Soft Card Shadow */}
+        <div
+          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-10 bg-[#7A5A40]/20 blur-xl rounded-full pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Pastel Craft Envelope / Postcard Container (Solid Cream - No Glassmorphism) */}
+        <div className="relative w-full bg-[#FFFDF9] border border-[#EADBCC] rounded-3xl p-7 sm:p-10 shadow-[0_20px_50px_rgba(80,50,30,0.14),0_2px_8px_rgba(80,50,30,0.06)] text-center overflow-hidden">
           {/* Subtle Decorative Pastel Corner Stitching */}
-          <div className="absolute top-3 left-4 text-xs font-sans text-amber-800/40 tracking-widest uppercase">
+          <div className="absolute top-4 left-5 text-xs font-sans text-amber-800/45 tracking-widest uppercase font-medium">
             ✦ OUR STORY ✦
           </div>
-          <div className="absolute top-3 right-4 text-xs font-sans text-amber-800/40 tracking-widest">
+          <div className="absolute top-4 right-5 text-xs font-sans text-amber-800/45 tracking-widest font-medium">
             № 1.4 YRS
           </div>
 
           {/* Cute Main Title */}
-          <h1 className="mt-3 text-4xl sm:text-5xl font-bold font-handwritten text-[#4A3728] tracking-wide mb-3 leading-tight">
+          <h1 className="mt-4 text-4xl sm:text-5xl font-bold font-handwritten text-[#4A3728] tracking-wide mb-4 leading-tight">
             {ANNIVERSARY_META.coverTitle}
           </h1>
 
-          {/* Interactive Origami Rocket / Plane Centerpiece (User Sketch 1) */}
-          <div
-            onClick={handleLaunch}
-            className="flex flex-col items-center justify-center my-1 cursor-pointer group"
-            title="Click to launch!"
-          >
-            <OrigamiPaperRocket isLaunching={isLaunching} />
-          </div>
-
-          {/* Cute Couple Polaroid with Pastel Washi Tape */}
-          <div className="relative w-32 sm:w-36 h-40 sm:h-44 mx-auto my-4 bg-[#FFFFFF] p-2 pb-6 rounded-lg shadow-[0_8px_20px_rgba(80,50,30,0.12)] border border-[#EFE6DC] transform -rotate-1 transition-transform hover:rotate-0 hover:scale-105">
-            {/* Cute Pastel Peach Washi Tape at Top */}
+          {/* Interactive Hero Origami Rocket with Circular Hold-to-Launch Ring */}
+          <div className="relative my-6 flex flex-col items-center justify-center">
             <div
-              className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 h-4 shadow-sm opacity-85 rotate-1"
-              style={{
-                backgroundColor: 'rgba(251, 191, 160, 0.85)',
-                maskImage:
-                  'repeating-linear-gradient(90deg, #000 0px, #000 3px, transparent 3px, transparent 4px)',
-              }}
-            />
-
-            <img
-              src="/images/ch1-kohkret/photo-2.png"
-              alt="Our Photo"
-              className="w-full h-26 sm:h-28 object-cover rounded-sm shadow-inner"
-            />
-            <span className="block text-[10px] sm:text-[11px] font-sans text-[#7A695B] mt-1.5 font-medium tracking-wide">
-              15 July 2025
-            </span>
-          </div>
-
-          {/* Cute "Click !" Launch Button (Matching Small Box in Sketch 1) */}
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={handleLaunch}
-              className="group relative px-9 py-2.5 bg-gradient-to-r from-[#F59E0B] via-[#F97316] to-[#FB7185] hover:from-[#E48B00] hover:to-[#F43F5E] text-white rounded-full font-sans font-semibold text-sm tracking-[0.18em] uppercase shadow-[0_6px_18px_rgba(245,158,11,0.35)] hover:shadow-[0_8px_24px_rgba(245,158,11,0.48)] transform hover:-translate-y-0.5 active:translate-y-0.5 active:scale-95 transition-all duration-200 cursor-pointer"
+              onMouseDown={startHold}
+              onMouseUp={endHold}
+              onMouseLeave={endHold}
+              onTouchStart={startHold}
+              onTouchEnd={endHold}
+              onTouchCancel={endHold}
+              onContextMenu={(e) => e.preventDefault()}
+              className="relative w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center cursor-pointer select-none group touch-none"
+              title="กดค้างที่จรวดเพื่อออกเดินทาง"
             >
-              <span>Click !</span>
-            </button>
+              {/* Circular Charging Gauge SVG */}
+              <svg
+                viewBox="0 0 180 180"
+                className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
+              >
+                <defs>
+                  <linearGradient id="rocketHoldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#F59E0B" />
+                    <stop offset="50%" stopColor="#F97316" />
+                    <stop offset="100%" stopColor="#FB7185" />
+                  </linearGradient>
+                </defs>
+
+                {/* Subtle Background Track */}
+                <circle
+                  cx="90"
+                  cy="90"
+                  r={CIRCLE_RADIUS}
+                  fill="none"
+                  stroke="#EFE6DA"
+                  strokeWidth="3.5"
+                  strokeDasharray="4 6"
+                />
+
+                {/* Dynamic Hold Progress Ring */}
+                <circle
+                  cx="90"
+                  cy="90"
+                  r={CIRCLE_RADIUS}
+                  fill="none"
+                  stroke="url(#rocketHoldGradient)"
+                  strokeWidth={isHolding ? '4.5' : '3.5'}
+                  strokeLinecap="round"
+                  strokeDasharray={CIRCUMFERENCE}
+                  strokeDashoffset={CIRCUMFERENCE * (1 - holdProgress / 100)}
+                  style={{
+                    filter: isHolding ? 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.55))' : 'none',
+                    transition: isHolding ? 'none' : 'stroke-dashoffset 0.25s ease-out',
+                  }}
+                />
+              </svg>
+
+              {/* The Hero Origami Rocket Centerpiece */}
+              <OrigamiPaperRocket
+                isLaunching={isLaunching}
+                isHolding={isHolding}
+              />
+            </div>
+
+            {/* Instruction Prompt / Status Feedback */}
+            <div className="mt-3 flex flex-col items-center select-none pointer-events-none">
+              <span
+                className={`text-xs sm:text-sm font-sans tracking-wider transition-all duration-300 font-medium ${
+                  isHolding
+                    ? 'text-[#F97316] scale-105 font-semibold'
+                    : 'text-[#8A7565] animate-pulse'
+                }`}
+              >
+                {isLaunching
+                  ? 'ทะยานสู่อวกาศ! 🚀'
+                  : isHolding
+                  ? `กำลังเริ่มออกเดินทาง... ${Math.round(holdProgress)}%`
+                  : 'กดค้างที่จรวดเพื่อออกเดินทาง ✦'}
+              </span>
+            </div>
           </div>
         </div>
       </div>
