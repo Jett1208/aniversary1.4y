@@ -357,15 +357,67 @@ export default function InteractiveProp({
 
       case 'duck-paddle': {
         sfx.playDuck();
+
+        // Spawn cheerful duck quack and water splash particles
+        const newId = Date.now();
+        setPopParticles([
+          { id: newId, symbol: '🦆', offset: -25 },
+          { id: newId + 1, symbol: '💦', offset: 0 },
+          { id: newId + 2, symbol: '💖', offset: 25 },
+        ]);
+        setTimeout(() => setPopParticles([]), 1300);
+
+        const baseRotZ = prop.rotationZ || 0;
+        const baseY = prop.position[1];
         const tl = gsap.timeline({ onComplete: () => setIsPlaying(false) });
-        tl.to(groupRef.current.rotation, { z: -0.3, duration: 0.15 })
-          .to(groupRef.current.rotation, { z: 0.3, duration: 0.2 })
-          .to(groupRef.current.rotation, { z: -0.2, duration: 0.2 })
+
+        // Cute water paddle wobble & wave bobbing
+        tl.to(groupRef.current.scale, {
+          x: 1.08,
+          y: 0.92,
+          duration: 0.1,
+          ease: 'power1.out',
+        })
+          .to(groupRef.current.position, {
+            y: baseY + 0.1,
+            duration: 0.15,
+            ease: 'power1.out',
+          }, '<')
           .to(groupRef.current.rotation, {
-            z: 0,
-            duration: 0.2,
+            z: baseRotZ - 0.22,
+            duration: 0.15,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.position, {
+            y: baseY - 0.05,
+            duration: 0.18,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ + 0.2,
+            duration: 0.18,
+            ease: 'sine.inOut',
+          }, '<')
+          .to(groupRef.current.rotation, {
+            z: baseRotZ - 0.1,
+            duration: 0.16,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.position, {
+            y: baseY,
+            duration: 0.25,
             ease: 'bounce.out',
-          });
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ,
+            duration: 0.25,
+            ease: 'bounce.out',
+          }, '<')
+          .to(groupRef.current.scale, {
+            x: 1,
+            y: 1,
+            duration: 0.2,
+          }, '<');
         break;
       }
 

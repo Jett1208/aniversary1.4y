@@ -82,8 +82,23 @@ Hardcoding these props directly into Chapter 1 would prevent reuse across other 
      - Shifted the game controller and status meters rightward (`position: [4.7, 0, 1.15]`) to eliminate overlap with the lying Polaroid plaque on the right page.
    - **Ground Contact Drop Shadows**: Darkened and widened ground contact shadows (`opacity: 0.88`, `rgba(40, 25, 15, 0.7)`, scale `width * 1.05`) in `InteractiveProp.tsx` and `SceneryCutout.tsx`, firmly grounding the classic car and controller to the scrapbook floor.
 
+10. **Extension to Chapter 4 (Lumphini Park - ถีบเรือเป็ด & สวนสีเขียวใจกลางกรุง)**:
+    - **Tier 1 (Monumental City Skyline, Park Bushes & Romantic Sky, Z = -2.8 to -2.2)**:
+      - Anchored the classic Silom skyscraper spire (`skyline-classic.png` at `[-2.8, 0, -2.8]`, scale `[5.8, 5.98]`) on the rear left, framed by blooming white jasmine bushes (`bush.png` at `[-1.75, 0, -2.4]`) at the base.
+      - Counterbalanced with floating watercolor clouds (`cloud-warm.png` and `cloud-blue.png`) and drifting pink heart balloons (`balloons.png` at `[3.9, 3.2, -1.8]`) in the upper sky with `'gentle-breeze'` animation.
+    - **Tier 2 (Core Memories & 3D Spotlights, Z = -0.75 to +0.6)**:
+      - Mounted 3D vintage brass gallery picture spotlights on all 3 Valentine's photo cards (`hasSpotlight: true`).
+      - Coordinated fresh botanical washi tape accents (`#34D399` emerald, `#F472B6` rose pink, `#38BDF8` sky lake blue).
+    - **Tier 3 (Foreground Wings, Lake Shoreline & Floating Duck Boat, Z = 1.15 to 1.45)**:
+      - Upgraded `InteractiveProp` to the iconic white duck pedal boat (`duck-boat.png` at `[-3.55, 0.12, 1.25]`, scale `[1.85, 2.37]`) floating upon gently bobbing watercolor lake ripples (`water.png` at `[-3.4, 0.01, 1.38]`, animation `'water-bob'`).
+      - Transferred the impressionist garden flower bed (`flower-bed.png` at `[-2.15, 0, 1.35]`, scale `[2.4, 1.17]`) to the inner bank between the duck boat and central photos, serving as the lush lake shoreline (analogous to the pottery placement in Chapter 1) and completely clearing the right polaroid.
+      - Enhanced `'duck-paddle'` action with a squash-and-stretch water wobble, quack sound `sfx.playDuck()`, and splashing `🦆 💦 💖` particles.
+      - Framed the right wing with the enlarged handmade Valentine's red rose bouquet (`rose-bouquet.png` at `[4.35, 0, 1.15]`, scale `[2.35, 2.55]`) and floating watercolor "Valentine's Day" calligraphy (`valentine.png` at `[4.3, 2.4, 1.35]`).
+    - **Tier 4 (Interactive Memory Plaque, Z = 1.35)**:
+      - Positioned the secret flippable Polaroid (`ch4-polaroid`) at `[3.25, 0.05, 1.35]` angled forward, keeping both the card and the "แตะเพื่อพลิก" flip badge 100% visible and unclipped by the lower viewport edge.
+
 ## Consequences
-- **Vastly Superior Ambiance**: Chapters 1, 2 & 3 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
+- **Vastly Superior Ambiance**: Chapters 1, 2, 3 & 4 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
 - **Authentic Physical Scrapbook Feel**: The diorama feels grounded on a real wooden desk rather than floating in empty 3D space, with paper bulk, spine folds, and sunlight god rays.
 - **Adorable Tactile Feedback**: Tapping the bicycle produces a bell chime, tapping the camera triggers a bright flash burst, and tapping the classic car triggers a playful honk and bounce.
 - **Zero Regressions**: Architecture is fully data-driven; other chapters remain completely stable and can adopt custom scenery props with simple config entries.
