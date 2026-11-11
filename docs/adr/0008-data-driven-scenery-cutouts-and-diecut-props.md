@@ -97,8 +97,23 @@ Hardcoding these props directly into Chapter 1 would prevent reuse across other 
     - **Tier 4 (Interactive Memory Plaque, Z = 1.35)**:
       - Positioned the secret flippable Polaroid (`ch4-polaroid`) at `[3.25, 0.05, 1.35]` angled forward, keeping both the card and the "แตะเพื่อพลิก" flip badge 100% visible and unclipped by the lower viewport edge.
 
+11. **Extension to Chapter 5 (Nai Lert Park Heritage Cafe - คาเฟ่นายปาร์คเลิศ & กลาสเฮ้าส์ในสวนสวย)**:
+    - **Tier 1 (Monumental European Glasshouse Cafe, Modern Glass Towers & Skyway Clouds, Z = -2.9 to -2.4)**:
+      - Anchored the charming European garden glasshouse cafe storefront (`cafe.png` at `[-2.2, 0, -2.8]`, scale `[7.2, 5.43]`) on the rear left, showcasing classic blue-white striped awnings, blooming flower boxes, and heritage architecture.
+      - Stationed the modern glass skyscraper cluster (`skyscrapers.png` at `[2.7, 0, -2.9]`, scale `[4.8, 4.77]`) on the rear right, perfectly exposed with 100% unobstructed visibility across all glass facades and architectural spires.
+      - Suspended floating watercolor cumulus clouds (`cloud-warm.png` at `[3.5, 4.3, -2.4]` and `cloud-teal.png` at `[1.2, 4.7, -2.6]`) drifting gracefully in the upper sky with gentle breeze animation, creating an airy and open skyline counterbalance.
+    - **Tier 2 (Core Memories & 3D Spotlights, Z = -0.75 to +0.6)**:
+      - Mounted 3D miniature brass gallery picture spotlights on all 3 Nai Lert photo cards (`hasSpotlight: true`).
+      - Coordinated fresh botanical cafe washi tape accents (`#6EE7B7` mint green, `#F472B6` rose macaron pink, `#FCD34D` pastry yellow).
+    - **Tier 3 (Foreground Tabletop Treats & Right-Wing Transit Pop-Up, Z = 1.25 to 1.55)**:
+      - Upgraded `InteractiveProp` to a hot steaming coffee/tea cup on saucer (`coffee-cup.png` at `[-3.55, 0, 1.25]`, scale `[1.8, 1.74]`), paired with a freshly baked golden croissant (`croissant.png` at `[-2.3, 0, 1.35]`, scale `[1.7, 1.48]`) on the left table wing.
+      - Enhanced `'tea-clink'` action in `InteractiveProp.tsx` with porcelain clink chime `sfx.playClink()`, lively celebratory toast bounce, and floating cafe particles (`☕ 🥐 💖`).
+      - Stationed the elevated BTS Skytrain (`bts-train.png` at `[3.85, 0, 1.55]`, scale `[2.9, 1.51]`) on the front-right book floor below/adjacent to the polaroid card, equipped with soft drop shadow (`hasShadow: true`) and folding support (`foldable: true`). This frames the lower-right margin cleanly while leaving the polaroid photo and "แตะเพื่อพลิก" hint badge fully visible.
+    - **Tier 4 (Interactive Memory Plaque, Z = 1.35)**:
+      - Placed the secret flippable Polaroid (`ch5-polaroid`) at `[3.25, 0.05, 1.35]` angled forward (`rotationZ: 0.08`), giving the couple's canal-side portrait prominent focus while remaining completely unobstructed.
+
 ## Consequences
-- **Vastly Superior Ambiance**: Chapters 1, 2, 3 & 4 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
+- **Vastly Superior Ambiance**: Chapters 1, 2, 3, 4 & 5 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
 - **Authentic Physical Scrapbook Feel**: The diorama feels grounded on a real wooden desk rather than floating in empty 3D space, with paper bulk, spine folds, and sunlight god rays.
 - **Adorable Tactile Feedback**: Tapping the bicycle produces a bell chime, tapping the camera triggers a bright flash burst, and tapping the classic car triggers a playful honk and bounce.
 - **Zero Regressions**: Architecture is fully data-driven; other chapters remain completely stable and can adopt custom scenery props with simple config entries.

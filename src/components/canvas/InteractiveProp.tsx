@@ -423,18 +423,57 @@ export default function InteractiveProp({
 
       case 'tea-clink': {
         sfx.playClink();
-        const tl = gsap.timeline({
-          onComplete: () => {
-            setIsPlaying(false);
-          },
-        });
-        tl.to(groupRef.current.rotation, { z: -0.2, duration: 0.12 })
-          .to(groupRef.current.rotation, { z: 0.2, duration: 0.15 })
+
+        // Spawn charming cafe tea, croissant, and heart particles
+        const newId = Date.now();
+        setPopParticles([
+          { id: newId, symbol: '☕', offset: -25 },
+          { id: newId + 1, symbol: '🥐', offset: 0 },
+          { id: newId + 2, symbol: '💖', offset: 25 },
+        ]);
+        setTimeout(() => setPopParticles([]), 1300);
+
+        const baseRotZ = prop.rotationZ || 0;
+        const baseY = prop.position[1];
+        const tl = gsap.timeline({ onComplete: () => setIsPlaying(false) });
+
+        // Playful afternoon tea clink toast bounce
+        tl.to(groupRef.current.position, {
+          y: baseY + 0.12,
+          duration: 0.12,
+          ease: 'power1.out',
+        })
           .to(groupRef.current.rotation, {
-            z: 0,
-            duration: 0.2,
+            z: baseRotZ + 0.18,
+            duration: 0.12,
+            ease: 'power1.out',
+          }, '<')
+          .to(groupRef.current.scale, {
+            x: 1.08,
+            y: 0.94,
+            duration: 0.1,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ - 0.12,
+            duration: 0.14,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.position, {
+            y: baseY,
+            duration: 0.24,
             ease: 'bounce.out',
-          });
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ,
+            duration: 0.24,
+            ease: 'bounce.out',
+          }, '<')
+          .to(groupRef.current.scale, {
+            x: 1,
+            y: 1,
+            duration: 0.2,
+          }, '<');
         break;
       }
 
