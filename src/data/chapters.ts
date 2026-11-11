@@ -662,8 +662,8 @@ export const CHAPTERS: ChapterConfig[] = [
     polaroid: {
       frontImageUrl: '/images/ch5-nailert/polaroid.jpg',
       backNote: 'ขนมหวานอร่อย แต่คนที่นั่งตรงข้ามหวานกว่าเยอะเลย 🍰',
-      position: [3.25, 0.05, 1.35],
-      rotationZ: 0.08,
+      position: [3.05, 0.05, 1.4],
+      rotationZ: 0.07,
     },
     prop: {
       id: 'ch5-prop',
@@ -706,8 +706,8 @@ export const CHAPTERS: ChapterConfig[] = [
       {
         id: 'ch5-scenery-bts',
         imageUrl: '/images/ch5-nailert/props/bts-train.png',
-        position: [3.85, 0, 1.55],
-        scale: [2.9, 1.51],
+        position: [4.75, 0, 1.35],
+        scale: [2.2, 1.15],
         rotationZ: -0.02,
         hasShadow: true,
         foldable: true,

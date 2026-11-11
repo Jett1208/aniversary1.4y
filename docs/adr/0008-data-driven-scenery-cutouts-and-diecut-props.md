@@ -105,12 +105,12 @@ Hardcoding these props directly into Chapter 1 would prevent reuse across other 
     - **Tier 2 (Core Memories & 3D Spotlights, Z = -0.75 to +0.6)**:
       - Mounted 3D miniature brass gallery picture spotlights on all 3 Nai Lert photo cards (`hasSpotlight: true`).
       - Coordinated fresh botanical cafe washi tape accents (`#6EE7B7` mint green, `#F472B6` rose macaron pink, `#FCD34D` pastry yellow).
-    - **Tier 3 (Foreground Tabletop Treats & Right-Wing Transit Pop-Up, Z = 1.25 to 1.55)**:
+    - **Tier 3 (Foreground Tabletop Treats & Right-Wing Transit Pop-Up, Z = 1.25 to 1.4)**:
       - Upgraded `InteractiveProp` to a hot steaming coffee/tea cup on saucer (`coffee-cup.png` at `[-3.55, 0, 1.25]`, scale `[1.8, 1.74]`), paired with a freshly baked golden croissant (`croissant.png` at `[-2.3, 0, 1.35]`, scale `[1.7, 1.48]`) on the left table wing.
       - Enhanced `'tea-clink'` action in `InteractiveProp.tsx` with porcelain clink chime `sfx.playClink()`, lively celebratory toast bounce, and floating cafe particles (`☕ 🥐 💖`).
-      - Stationed the elevated BTS Skytrain (`bts-train.png` at `[3.85, 0, 1.55]`, scale `[2.9, 1.51]`) on the front-right book floor below/adjacent to the polaroid card, equipped with soft drop shadow (`hasShadow: true`) and folding support (`foldable: true`). This frames the lower-right margin cleanly while leaving the polaroid photo and "แตะเพื่อพลิก" hint badge fully visible.
-    - **Tier 4 (Interactive Memory Plaque, Z = 1.35)**:
-      - Placed the secret flippable Polaroid (`ch5-polaroid`) at `[3.25, 0.05, 1.35]` angled forward (`rotationZ: 0.08`), giving the couple's canal-side portrait prominent focus while remaining completely unobstructed.
+      - Positioned the elevated BTS Skytrain (`bts-train.png` at `[4.75, 0, 1.35]`, scale `[2.2, 1.15]`) on the far-right wing of the scrapbook floor, equipped with soft drop shadow (`hasShadow: true`) and folding support (`foldable: true`). Stationary at the outer edge, it frames the diorama cleanly without overlapping either the central couple selfie (`ch5-photo-3`) or the Polaroid portrait.
+    - **Tier 4 (Interactive Memory Plaque, Z = 1.4)**:
+      - Placed the secret flippable Polaroid (`ch5-polaroid`) at `[3.05, 0.05, 1.4]` angled forward (`rotationZ: 0.07`), providing ample breathing room between the central photo cards and the right-wing BTS train while keeping the "แตะเพื่อพลิก" hint badge fully unclipped.
 
 ## Consequences
 - **Vastly Superior Ambiance**: Chapters 1, 2, 3, 4 & 5 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
