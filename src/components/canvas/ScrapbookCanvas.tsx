@@ -340,16 +340,16 @@ export default function ScrapbookCanvas() {
 
         {/* Bottom Banner: Current Chapter & Scroll Progress */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none">
-          <div className="px-5 py-2.5 bg-[#FFFDF9]/92 backdrop-blur-md rounded-full border border-[#EADBCC] shadow-[0_6px_20px_rgba(95,65,40,0.08)] flex items-center gap-3 pointer-events-auto">
-            <span className="text-xs font-sans text-[#968270]">
+          <div className="px-5 py-2.5 bg-[#FFFDF9] backdrop-blur-md rounded-full border border-[#D5C2AF] shadow-[0_8px_24px_rgba(40,25,15,0.16)] flex items-center gap-3 pointer-events-auto">
+            <span className="text-xs font-sans font-semibold text-amber-900 bg-amber-100/90 px-2 py-0.5 rounded-full">
               {activeChapterIndex + 1} / {CHAPTERS.length}
             </span>
-            <span className="w-1 h-1 rounded-full bg-[#F59E0B]/70" />
-            <span className="text-sm font-handwritten text-[#4A3728] font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
+            <span className="text-base font-handwritten text-[#2E1E12] font-bold tracking-wide">
               {currentChapter.locationName}
             </span>
-            <span className="w-1 h-1 rounded-full bg-[#F59E0B]/70" />
-            <span className="text-xs font-sans text-[#7A695B] hidden sm:inline">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
+            <span className="text-xs font-sans text-[#5C4533] font-medium hidden sm:inline">
               {currentChapter.title}
             </span>
           </div>

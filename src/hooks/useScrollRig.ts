@@ -113,7 +113,8 @@ export function useScrollRig(containerRef: React.RefObject<HTMLDivElement | null
     currentDepthZ - 0.5,
   ];
 
-  const isDiving = dipAmount > 0.8 || scrollVelocity > 1.2;
+  // Only dive-hide when actively plunging at high speed between chapters
+  const isDiving = (dipAmount > 2.2 && scrollVelocity > 0.4) || scrollVelocity > 2.2;
 
   // Check if chapter is close enough to camera to be considered active
   const isChapterActive = useCallback(

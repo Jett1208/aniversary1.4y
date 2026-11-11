@@ -479,21 +479,67 @@ export default function InteractiveProp({
 
       case 'lake-lights': {
         sfx.playTwinkle();
+
+        // Spawn charming fairy light sparkles and golden hearts
+        const newId = Date.now();
+        setPopParticles([
+          { id: newId, symbol: '✨', offset: -25 },
+          { id: newId + 1, symbol: '💡', offset: 0 },
+          { id: newId + 2, symbol: '💛', offset: 25 },
+        ]);
+        setTimeout(() => setPopParticles([]), 1400);
+
+        const baseRotZ = prop.rotationZ || 0;
+        const baseY = prop.position[1];
+        const tl = gsap.timeline({ onComplete: () => setIsPlaying(false) });
+
+        // Pulsing warm twilight flash burst
         if (flashLightRef.current) {
-          const tl = gsap.timeline({ onComplete: () => setIsPlaying(false) });
-          for (let i = 0; i < 5; i++) {
-            tl.to(flashLightRef.current, { intensity: 8, duration: 0.1 }).to(
-              flashLightRef.current,
-              { intensity: 0.5, duration: 0.15 }
-            );
-          }
+          tl.to(flashLightRef.current, { intensity: 14, duration: 0.12 })
+            .to(flashLightRef.current, { intensity: 1.5, duration: 0.14 })
+            .to(flashLightRef.current, { intensity: 12, duration: 0.1 })
+            .to(flashLightRef.current, { intensity: 0.8, duration: 0.18 })
+            .to(flashLightRef.current, { intensity: 10, duration: 0.12 })
+            .to(flashLightRef.current, { intensity: 0, duration: 0.3 });
         }
-        gsap.to(groupRef.current.rotation, {
-          y: '+=3.14',
-          duration: 1.2,
-          ease: 'power2.inOut',
-          onComplete: () => setIsPlaying(false),
-        });
+
+        // Tactile fairy light sway and springy bounce
+        tl.to(groupRef.current.position, {
+          y: baseY + 0.14,
+          duration: 0.14,
+          ease: 'power1.out',
+        }, 0)
+          .to(groupRef.current.rotation, {
+            z: baseRotZ + 0.16,
+            duration: 0.14,
+            ease: 'power1.out',
+          }, '<')
+          .to(groupRef.current.scale, {
+            x: 1.1,
+            y: 0.92,
+            duration: 0.1,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ - 0.14,
+            duration: 0.16,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.position, {
+            y: baseY,
+            duration: 0.28,
+            ease: 'bounce.out',
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ,
+            duration: 0.28,
+            ease: 'bounce.out',
+          }, '<')
+          .to(groupRef.current.scale, {
+            x: 1,
+            y: 1,
+            duration: 0.2,
+          }, '<');
         break;
       }
 

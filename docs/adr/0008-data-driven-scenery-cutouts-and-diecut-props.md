@@ -112,8 +112,28 @@ Hardcoding these props directly into Chapter 1 would prevent reuse across other 
     - **Tier 4 (Interactive Memory Plaque, Z = 1.4)**:
       - Placed the secret flippable Polaroid (`ch5-polaroid`) at `[3.05, 0.05, 1.4]` angled forward (`rotationZ: 0.07`), providing ample breathing room between the central photo cards and the right-wing BTS train while keeping the "แตะเพื่อพลิก" hint badge fully unclipped.
 
+12. **Extension & Visual Polish for Chapter 6 (The Lake Club Muang Thong Thani - ดินเนอร์ริมทะเลสาบ & ไฟทไวไลท์)**:
+    - **Tier 1 (Lakeside Clubhouse Venue, City Skyline Backdrop & Water Base, Z = -2.9 to -2.7)**:
+      - Anchored the lakeside clubhouse venue (`clubhouse.png` at `[-2.4, 0, -2.8]`, scale `[6.8, 4.49]`) on the rear left. Enhanced the asset by lifting deep shadow brightness by 25% and applying a crisp ~12px white paper cutout outline via alpha dilation, unifying it with the authentic scrapbook paper craft aesthetic.
+      - Removed the grounded duplicate blue cloud and elevated the city skyline (`ch6-scenery-skyline` at `[3.2, 0, -2.8]`, enlarged $1.8\times$ to `scale: [6.8, 1.98]`) across the rear right, serving as the monumental architectural counterpart to the left clubhouse.
+      - Stationed the wide water ripple surface (`water-ripples.png` at `[3.2, 0.02, -2.7]`, scale `[5.6, 1.22]`, `water-bob`) along the lake base beneath the skyline.
+      - Equipped both the city skyline and water ripples with crisp ~12px white paper cutout borders via C# alpha dilation to cleanly delineate layers.
+      - Suspended floating twilight watercolor clouds high on the sky horizon (`cloud-warm.png` at `[2.0, 4.6, -2.5]` and `cloud-blue.png` at `[4.6, 4.3, -2.3]`) with gentle breeze drift animation, establishing a clear visual hierarchy from lake water (base) -> architecture (mid) -> sky (top).
+    - **Tier 2 (Core Memories & 3D Spotlights, Z = -0.75 to +0.6)**:
+      - Mounted 3D miniature brass gallery picture spotlights on all 3 Lake Club photo cards (`hasSpotlight: true`).
+      - Coordinated warm evening washi tape accents (`#F59E0B` golden sunset amber, `#EC4899` romantic dusk rose, `#38BDF8` lakeside twilight blue).
+    - **Tier 3 (Foreground Tabletop Treats & Left-Wing Breathing Room, Z = 1.25 to 1.45)**:
+      - Shifted the glowing ping-pong fairy string lights (`fairy-lights.png` at `[-4.6, 0.15, 1.25]`, scale `[1.75, 1.67]`) to the far left stage margin.
+      - Enhanced `'lake-lights'` action in `InteractiveProp.tsx` with a multi-stage warm twilight light burst (`intensity: 14`), crystalline chime `sfx.playTwinkle()`, springy sway bounce, and floating `✨ 💡 💛` sparkles.
+      - Placed the refreshing evening dinner cocktail/flowers (`cocktail.png` at `[-2.75, 0, 1.35]`, scale `[1.6, 1.7]`) with contact drop shadow on the left table, creating generous breathing room between the lights, cocktail, and Photo 1.
+    - **Tier 4 (Interactive Memory Plaque, Z = 1.4)**:
+      - Placed the secret flippable Polaroid (`ch6-polaroid`) at `[3.1, 0.05, 1.4]` angled forward (`rotationZ: -0.07`), completely unobstructed by any city skyline or scenery props.
+    - **UI Stability & Bottom Navigation Contrast**:
+      - Relaxed the dive-hiding sensitivity in `useScrollRig.ts` so `CaptionCard` remains permanently and reliably visible whenever the user is viewing or slowly reading Chapter 6.
+      - Upgraded the bottom chapter pill in `ScrapbookCanvas.tsx` to a solid cream card (`bg-[#FFFDF9]`, border `#D5C2AF`, text `#2E1E12`) with high contrast and explicit chapter badge, ensuring 100% legibility against the wooden tabletop.
+
 ## Consequences
-- **Vastly Superior Ambiance**: Chapters 1, 2, 3, 4 & 5 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
+- **Vastly Superior Ambiance**: Chapters 1, 2, 3, 4, 5 & 6 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
 - **Authentic Physical Scrapbook Feel**: The diorama feels grounded on a real wooden desk rather than floating in empty 3D space, with paper bulk, spine folds, and sunlight god rays.
 - **Adorable Tactile Feedback**: Tapping the bicycle produces a bell chime, tapping the camera triggers a bright flash burst, and tapping the classic car triggers a playful honk and bounce.
 - **Zero Regressions**: Architecture is fully data-driven; other chapters remain completely stable and can adopt custom scenery props with simple config entries.
