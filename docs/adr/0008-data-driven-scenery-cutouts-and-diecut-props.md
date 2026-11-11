@@ -132,8 +132,36 @@ Hardcoding these props directly into Chapter 1 would prevent reuse across other 
       - Relaxed the dive-hiding sensitivity in `useScrollRig.ts` so `CaptionCard` remains permanently and reliably visible whenever the user is viewing or slowly reading Chapter 6.
       - Upgraded the bottom chapter pill in `ScrapbookCanvas.tsx` to a solid cream card (`bg-[#FFFDF9]`, border `#D5C2AF`, text `#2E1E12`) with high contrast and explicit chapter badge, ensuring 100% legibility against the wooden tabletop.
 
+13. **Extension to Chapter 7 (Pattaya Beach & Grand Finale - ทะเล พระอาทิตย์ตก & พลุฉลอง 1.4 ปี)**:
+    - **Tier 1 (Panoramic Sunset Bay, Skyline & Grand Sky Fireworks, Z = -2.9 to -2.4)**:
+      - Anchored the wide panoramic sunset sea backdrop (`sunset-sea.png` / `news (1).png` at `[-0.4, 0.4, -2.9]`, scale `[11.5, 5.16]`), establishing the warm evening sea and sunlit horizon with puffy cloud outline.
+      - Stationed the clean Pattaya skyline (`pattaya-skyline.png` / `news (3).png` at `[3.7, 0.05, -2.6]`, scale `[5.2, 4.9]`) on the rear right, showcasing the illuminated Pattaya hill and Pattaya Park Tower with the Ferris wheel cleanly removed.
+      - Suspended the vibrant multi-color sky fireworks bouquet (`fireworks-sky.png` / `news (6).png` at `[1.8, 2.2, -2.4]`, scale `[6.8, 3.72]`, `gentle-breeze`) fanning across the upper twilight sky with pink, purple, golden yellow bursts, and sparkling stars.
+    - **Tier 2 (Core Memories & 3D Spotlights, Z = -0.75 to +0.6)**:
+      - Mounted 3D miniature brass gallery picture spotlights on all 3 Pattaya photo cards (`hasSpotlight: true`).
+      - Fanned the cards harmoniously (`-2.15`, `0.15`, `2.2`) with coordinated washi tape accents (`#818CF8` periwinkle, `#F43F5E` sunset coral pink, `#FCD34D` warm golden amber).
+    - **Tier 3 (Left Beach Oasis Uncluttered Staging & Right-Wing Sand Starfish, Z = 1.15 to 1.45)**:
+      - Resolved left-wing crowding by reorganizing props into clear depth and horizontal tiers:
+        - Coconut palm tree and wooden "PATTAYA" sign (`palm-sign.png` / `news (4).png` at `[-4.2, 0, 0.9]`, scale `[3.4, 3.43]`, `hasShadow: true`, `foldable: true`) placed cleanly in the rear-left corner.
+        - Combined beach lounger set (`beach-oasis.png` / `news (5).png` at `[-3.8, 0.01, 1.45]`, scale `[3.3, 1.74]`, `hasShadow: true`, `foldable: true`) tucked under the sign with ample clearance from the photos.
+        - Interactive wooden direction sign on post (`direction-sign.png` / `news (2).png` at `[-2.35, 0.05, 1.15]`, scale `[1.35, 0.75]`, label: `'🎆 แตะจุดพลุ'`) cleanly nestled between the oasis and the photos with a compact, non-intrusive tooltip badge.
+        - Re-centered `ch7-photo-1` to `xOffset: -1.85`, establishing perfect 2.0-unit symmetry across all three photos and eliminating any overlapping with the beach oasis.
+      - Enhanced `'fireworks'` action with **Real Aerial Firework Engine** (`realFireworks.ts`): Replaced birthday confetti paper poppers with realistic display fireworks. Shells launch from mortars beside the left ($X \approx 14\%$) and right ($X \approx 86\%$) edges of the wooden desk with sizzling ascension trails and synthesized launch whistles (`sfx.playRocketLaunchWhistle()`), soaring into the upper twilight sky and detonating with low-frequency bass thuds (`sfx.playFireworkDetonation()`) into 80–120 spherical sparks with additive bloom, motion blur trails, and cascading golden weeping willows across a 5-stage choreographed barrage.
+      - Replaced the tropical cocktail on the right with a delicate sand dune patch with pink seashell and orange starfish (`sand-starfish-right.png` / `new (1).png` at `[4.4, 0.01, 1.35]`, scale `[1.8, 1.04]`), gently framing the right edge without visual clutter.
+    - **Tier 4 (Interactive Memory Plaque, Z = 1.4)**:
+      - Placed the secret flippable Polaroid (`ch7-polaroid`) at `[3.1, 0.05, 1.4]` angled forward (`rotationZ: 0.08`), keeping the secret note and hint badge completely unclipped.
+    - **Dynamic Sunset Atmosphere & Enhanced 3D Lighting & Shadows**:
+      - Calculated continuous scroll interpolation factor `sunsetFactor = clamp((chapterProgress - 5.15) / 0.85, 0, 1)`, smoothly morphing from Chapter 6 into Chapter 7.
+      - Enabled Canvas `alpha: true` and rendered an authentic vertical sunset twilight gradient matching the sampled colors of `sunset-sea.png`: deep twilight violet (`#442445`) $\to$ twilight plum (`#6E3054`) $\to$ magenta (`#9E3E5F`) $\to$ coral-pink (`#C45568`) $\to$ peach (`#DF715E`) $\to$ golden orange (`#F39462`) $\to$ glowing horizon sun (`#FFE196`).
+      - Created `DynamicAtmosphere` component to lerp Three.js `scene.fog.color` from daylight craft cream (`#EDE5D8`) to sunset horizon coral (`#D56B5C`), seamlessly dissolving distant 3D geometry into the sunset.
+      - **Cutout Silhouette Shadow Mapping (`customDepthMaterial`)**: Deployed `THREE.MeshDepthMaterial` with `depthPacking: THREE.RGBADepthPacking`, `map: texture`, and `alphaTest: 0.35` across all `SceneryCutout` and `InteractiveProp` meshes. Instead of casting flat rectangular plane shadows, stickers now cast realistic, organic paper cutout shadows of palm fronds, beach chair slats, and signposts directly onto the scrapbook surface.
+      - **Overhead Sunlight Projection**: Kept primary directional sunlight at high-angle overhead (`[5, 12, Z+8]`), ensuring standing photo cards and props only cast subtle, natural contact drop shadows beneath their bottom edges, completely eliminating the horizontal wall-shadow bug that previously occluded the right page.
+      - **Warm Luminous Ambiance**: Maintained ambient light at a luminous, sunlit intensity (`1.15` to `1.20`, color `#FFF5EB`) and active fill lights (`0.45` and `0.25`), keeping both pages of the scrapbook clean, warm, bright cream paper.
+      - **Tightened Shadow Map Bounds**: Tightened shadow camera bounds (`[-10, 10, 10, -10]`, `shadow-bias: -0.0003`, `shadow-normalBias: 0.025`) for crisp, high-definition shadows without acne.
+      - **Pristine Paper Stage**: Removed experimental palm frond overlay to preserve a 100% clean, sunlit craft paper surface across both pages, featuring only natural 3D contact shadows anchored underneath physical props and polaroid frames.
+
 ## Consequences
-- **Vastly Superior Ambiance**: Chapters 1, 2, 3, 4, 5 & 6 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
+- **Vastly Superior Ambiance**: Chapters 1 through 7 transform into rich, living 3D pop-up scenes with depth layers, regional landmarks, and interactive props.
 - **Authentic Physical Scrapbook Feel**: The diorama feels grounded on a real wooden desk rather than floating in empty 3D space, with paper bulk, spine folds, and sunlight god rays.
 - **Adorable Tactile Feedback**: Tapping the bicycle produces a bell chime, tapping the camera triggers a bright flash burst, and tapping the classic car triggers a playful honk and bounce.
 - **Zero Regressions**: Architecture is fully data-driven; other chapters remain completely stable and can adopt custom scenery props with simple config entries.

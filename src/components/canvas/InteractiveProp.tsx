@@ -54,6 +54,15 @@ function DieCutIllustratedMesh({
     return tex;
   }, []);
 
+  // Custom Depth Material: enables authentic cutout sticker shadows respecting transparent alpha
+  const customDepthMaterial = useMemo(() => {
+    return new THREE.MeshDepthMaterial({
+      depthPacking: THREE.RGBADepthPacking,
+      map: texture,
+      alphaTest: 0.35,
+    });
+  }, [texture]);
+
   return (
     <group rotation={[0, 0, rotationZ]}>
       {/* Ground contact shadow under wheels */}
@@ -77,6 +86,7 @@ function DieCutIllustratedMesh({
         position={[0, height / 2, 0]}
         castShadow
         receiveShadow
+        customDepthMaterial={customDepthMaterial}
         renderOrder={12}
         scale={hovered ? [1.06, 1.06, 1.06] : [1, 1, 1]}
       >
@@ -548,15 +558,68 @@ export default function InteractiveProp({
         if (onTriggerFireworks) {
           onTriggerFireworks();
         }
-        gsap.to(groupRef.current.scale, {
-          x: 1.4,
-          y: 1.4,
-          z: 1.4,
-          duration: 0.2,
-          yoyo: true,
-          repeat: 3,
-          onComplete: () => setIsPlaying(false),
-        });
+
+        // Spawn grand finale fireworks, sparkles, hearts and beach emojis
+        const newId = Date.now();
+        setPopParticles([
+          { id: newId, symbol: '🎆', offset: -35 },
+          { id: newId + 1, symbol: '✨', offset: -12 },
+          { id: newId + 2, symbol: '💖', offset: 12 },
+          { id: newId + 3, symbol: '🏖️', offset: 35 },
+        ]);
+        setTimeout(() => setPopParticles([]), 1600);
+
+        const baseRotZ = prop.rotationZ || 0;
+        const baseY = prop.position[1];
+        const tl = gsap.timeline({ onComplete: () => setIsPlaying(false) });
+
+        // Pulsing warm twilight flash burst
+        if (flashLightRef.current) {
+          tl.to(flashLightRef.current, { intensity: 16, duration: 0.12 })
+            .to(flashLightRef.current, { intensity: 2, duration: 0.14 })
+            .to(flashLightRef.current, { intensity: 14, duration: 0.12 })
+            .to(flashLightRef.current, { intensity: 1, duration: 0.16 })
+            .to(flashLightRef.current, { intensity: 12, duration: 0.14 })
+            .to(flashLightRef.current, { intensity: 0, duration: 0.4 });
+        }
+
+        // Tactile celebratory hop and squash-and-stretch bounce
+        tl.to(groupRef.current.position, {
+          y: baseY + 0.18,
+          duration: 0.14,
+          ease: 'power2.out',
+        }, 0)
+          .to(groupRef.current.rotation, {
+            z: baseRotZ + 0.15,
+            duration: 0.14,
+            ease: 'power2.out',
+          }, '<')
+          .to(groupRef.current.scale, {
+            x: 1.15,
+            y: 0.88,
+            duration: 0.12,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ - 0.12,
+            duration: 0.16,
+            ease: 'sine.inOut',
+          })
+          .to(groupRef.current.position, {
+            y: baseY,
+            duration: 0.32,
+            ease: 'bounce.out',
+          })
+          .to(groupRef.current.rotation, {
+            z: baseRotZ,
+            duration: 0.32,
+            ease: 'bounce.out',
+          }, '<')
+          .to(groupRef.current.scale, {
+            x: 1,
+            y: 1,
+            duration: 0.25,
+          }, '<');
         break;
       }
 
@@ -637,19 +700,21 @@ export default function InteractiveProp({
       {/* Floating Tooltip Hint */}
       {!hideTooltip && (
         <Html
-          position={[0, propHeight + 0.25, 0]}
+          position={[0, propHeight + 0.12, 0]}
           center
           distanceFactor={14}
         >
           <div
-            className={`pointer-events-none select-none whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-sans font-medium shadow-xl transition-all duration-300 flex items-center gap-1.5 ${
+            className={`pointer-events-none select-none whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-sans font-medium shadow-lg transition-all duration-300 flex items-center gap-1 ${
               hovered || !hasInteracted
-                ? 'opacity-100 scale-100 bg-amber-950/90 text-amber-200 border border-amber-400/50 shadow-amber-900/30 ring-2 ring-amber-300/30'
-                : 'opacity-70 scale-90 bg-stone-900/80 text-stone-300'
+                ? 'opacity-95 scale-100 bg-amber-950/85 text-amber-200 border border-amber-400/40 shadow-amber-900/30 ring-1 ring-amber-300/30 backdrop-blur-sm'
+                : 'opacity-60 scale-90 bg-stone-900/75 text-stone-300'
             }`}
           >
             <span>{prop.label}</span>
-            <span className="text-[11px] text-amber-300 font-bold">✦ แตะเลย!</span>
+            {!prop.label.includes('แตะ') && (
+              <span className="text-[10px] text-amber-300 font-bold">✦ แตะเลย!</span>
+            )}
           </div>
         </Html>
       )}

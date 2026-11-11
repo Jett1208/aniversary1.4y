@@ -68,6 +68,15 @@ export default function SceneryCutout({
     return tex;
   }, []);
 
+  // Custom Depth Material: enables authentic cutout sticker shadows respecting transparent alpha
+  const customDepthMaterial = useMemo(() => {
+    return new THREE.MeshDepthMaterial({
+      depthPacking: THREE.RGBADepthPacking,
+      map: texture,
+      alphaTest: 0.35,
+    });
+  }, [texture]);
+
   // Frame loop for 1:1 scrub folding and gentle environmental animations
   useFrame(({ clock }, delta) => {
     // 1. Scrub-linked bottom-edge folding
@@ -149,6 +158,7 @@ export default function SceneryCutout({
           position={[0, height / 2, 0]}
           castShadow
           receiveShadow
+          customDepthMaterial={customDepthMaterial}
           renderOrder={sceneryRenderOrder}
         >
           <planeGeometry args={[width, height]} />

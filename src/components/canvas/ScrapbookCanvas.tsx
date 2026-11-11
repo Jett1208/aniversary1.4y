@@ -1,4 +1,4 @@
-import { Suspense, useRef, useCallback, useState } from 'react';
+import { Suspense, useRef, useCallback, useState, useMemo } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -68,30 +68,75 @@ function CameraRig({
 }
 
 /**
- * Dynamic Neutral Daylight Lighting that tracks camera depth along Z-axis
- * without tinting photos or paper stages with artificial chapter colors.
+ * Dynamic Neutral Daylight & Sunset Lighting that tracks camera depth along Z-axis
+ * and smoothly warms into a radiant Golden Hour glow as the user enters Chapter 7.
  */
 function ScrapbookLighting({
   targetZ,
+  sunsetFactor = 0,
 }: {
   targetZ: number;
+  sunsetFactor?: number;
 }) {
   const lightRef = useRef<THREE.DirectionalLight>(null);
+  const ambientRef = useRef<THREE.AmbientLight>(null);
+  const fillDirRef = useRef<THREE.DirectionalLight>(null);
+  const fillPointRef = useRef<THREE.PointLight>(null);
+  const sunsetRimRef = useRef<THREE.DirectionalLight>(null);
   const currentLightZ = useRef(targetZ);
+
+  // Light color interpolation definitions
+  const dayAmbient = useMemo(() => new THREE.Color('#FFFFFF'), []);
+  const sunsetAmbient = useMemo(() => new THREE.Color('#FFF5EB'), []); // Warm luminous sunlit cream
+  const dayDir = useMemo(() => new THREE.Color('#FFFFFF'), []);
+  const sunsetDir = useMemo(() => new THREE.Color('#FFF1DF'), []); // Radiant golden-hour sun
 
   useFrame((_, delta) => {
     currentLightZ.current = THREE.MathUtils.damp(currentLightZ.current, targetZ, 3.5, delta);
 
     if (lightRef.current) {
-      lightRef.current.position.set(5, 12, currentLightZ.current + 8);
+      // Keep directional light high and overhead [5, 12, Z+8] so standing photo cards
+      // only cast natural small contact drop shadows directly beneath themselves,
+      // avoiding massive side-shadow blockages across the open scrapbook pages!
+      const dirX = 5;
+      const dirY = 12;
+      const dirZ = currentLightZ.current + 8;
+
+      lightRef.current.position.set(dirX, dirY, dirZ);
       lightRef.current.target.position.set(0, 0, currentLightZ.current);
       lightRef.current.target.updateMatrixWorld();
+      lightRef.current.color.lerpColors(dayDir, sunsetDir, sunsetFactor);
+      lightRef.current.intensity = THREE.MathUtils.lerp(1.45, 1.55, sunsetFactor);
+    }
+
+    if (ambientRef.current) {
+      // Keep ambient light luminous and warm so the craft paper remains bright and clean
+      ambientRef.current.color.lerpColors(dayAmbient, sunsetAmbient, sunsetFactor);
+      ambientRef.current.intensity = THREE.MathUtils.lerp(1.15, 1.20, sunsetFactor);
+    }
+
+    if (fillDirRef.current) {
+      fillDirRef.current.intensity = 0.45;
+      fillDirRef.current.position.set(-4, 6, currentLightZ.current - 5);
+    }
+
+    if (fillPointRef.current) {
+      fillPointRef.current.intensity = 0.25;
+      fillPointRef.current.position.set(0, 4, currentLightZ.current - 4);
+    }
+
+    if (sunsetRimRef.current) {
+      // Warm golden sunset horizon rim light outlining tops/backs of pop-up cutouts
+      sunsetRimRef.current.position.set(0, 4.5, currentLightZ.current - 12);
+      sunsetRimRef.current.target.position.set(0, 1, currentLightZ.current);
+      sunsetRimRef.current.target.updateMatrixWorld();
+      sunsetRimRef.current.intensity = sunsetFactor * 0.95;
     }
   });
 
   return (
     <>
-      <ambientLight intensity={1.15} color="#FFFFFF" />
+      <ambientLight ref={ambientRef} intensity={1.15} color="#FFFFFF" />
       <directionalLight
         ref={lightRef}
         position={[5, 12, 8]}
@@ -101,17 +146,53 @@ function ScrapbookLighting({
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-far={45}
-        shadow-camera-left={-16}
-        shadow-camera-right={16}
-        shadow-camera-top={16}
-        shadow-camera-bottom={-16}
-        shadow-bias={-0.0005}
-        shadow-normalBias={0.02}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+        shadow-bias={-0.0003}
+        shadow-normalBias={0.025}
       />
-      <directionalLight position={[-4, 6, -5]} intensity={0.45} color="#FFFFFF" />
-      <pointLight position={[0, 4, -4]} intensity={0.25} color="#FFFFFF" />
+      <directionalLight
+        ref={fillDirRef}
+        position={[-4, 6, -5]}
+        intensity={0.45}
+        color="#FFFFFF"
+      />
+      <pointLight
+        ref={fillPointRef}
+        position={[0, 4, -4]}
+        intensity={0.25}
+        color="#FFFFFF"
+      />
+      {/* Warm Golden Sunset Horizon Rim Light */}
+      <directionalLight
+        ref={sunsetRimRef}
+        position={[0, 5, -14]}
+        intensity={0}
+        color="#FF7548"
+      />
     </>
   );
+}
+
+/**
+ * DynamicAtmosphere — Smoothly transitions Three.js fog color from
+ * daylight craft cream (#EDE5D8) to sunset horizon coral (#D56B5C)
+ * as the user approaches Chapter 7.
+ */
+function DynamicAtmosphere({ sunsetFactor }: { sunsetFactor: number }) {
+  const { scene } = useThree();
+  const dayFog = useMemo(() => new THREE.Color('#EDE5D8'), []);
+  const sunsetFog = useMemo(() => new THREE.Color('#D56B5C'), []);
+
+  useFrame(() => {
+    if (scene.fog) {
+      scene.fog.color.lerpColors(dayFog, sunsetFog, sunsetFactor);
+    }
+  });
+
+  return null;
 }
 
 export default function ScrapbookCanvas() {
@@ -140,6 +221,13 @@ export default function ScrapbookCanvas() {
     useAudioCrossfade(activeChapterIndex);
 
   const currentChapter = CHAPTERS[activeChapterIndex] || CHAPTERS[0];
+
+  // Sunset transition factor for Chapter 7: smoothly morphs from 0.0 (daylight craft cream)
+  // at chapter 1-6 up to 1.0 (rich sunset twilight) between chapter 6 and 7 (5.15 to 6.0)
+  const sunsetFactor = Math.min(
+    1,
+    Math.max(0, (chapterProgress - 5.15) / 0.85)
+  );
 
   const handleOpenBook = useCallback(() => {
     setIsBookOpened(true);
@@ -189,13 +277,38 @@ export default function ScrapbookCanvas() {
 
       {/* Sticky full-screen 3D viewport */}
       <div className="sticky top-0 w-full h-screen overflow-hidden">
+        {/* Base Daylight Craft Cream Background */}
+        <div className="absolute inset-0 bg-[#EDE5D8]" />
+
+        {/* Grand Finale Sunset Sky Gradient Layer (matching Chapter 7 sunset-sea.png) */}
+        <div
+          className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(180deg, #442445 0%, #6E3054 18%, #9E3E5F 34%, #C45568 48%, #DF715E 64%, #F39462 78%, #FABD6E 90%, #FFE196 100%)',
+            opacity: sunsetFactor,
+          }}
+        />
+
         {/* Warm Golden Sunbeams Overlay (Daylight God Rays) */}
         <div
-          className="absolute inset-0 pointer-events-none z-10"
+          className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-300"
           style={{
             background:
               'radial-gradient(ellipse 120% 80% at 92% 8%, rgba(255, 230, 160, 0.28) 0%, rgba(255, 210, 130, 0.12) 35%, transparent 70%)',
             mixBlendMode: 'screen',
+            opacity: 1 - sunsetFactor * 0.45,
+          }}
+        />
+
+        {/* Sunset Twilight Golden Hour God Rays Overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-300"
+          style={{
+            background:
+              'radial-gradient(ellipse 130% 90% at 85% 15%, rgba(255, 175, 85, 0.45) 0%, rgba(255, 120, 70, 0.22) 35%, rgba(180, 70, 90, 0.12) 65%, transparent 85%)',
+            mixBlendMode: 'screen',
+            opacity: sunsetFactor,
           }}
         />
 
@@ -208,11 +321,22 @@ export default function ScrapbookCanvas() {
           }}
         />
 
+        {/* Sunset Twilight Vignette Overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-300"
+          style={{
+            background:
+              'radial-gradient(ellipse 75% 70% at 50% 50%, transparent 45%, rgba(50, 18, 38, 0.38) 100%)',
+            opacity: sunsetFactor,
+          }}
+        />
+
         <Canvas
           shadows
           dpr={[1, 2]}
           gl={{
             antialias: true,
+            alpha: true,
             toneMapping: THREE.LinearToneMapping,
             toneMappingExposure: 1.0,
           }}
@@ -223,8 +347,8 @@ export default function ScrapbookCanvas() {
             position: [0, 8, 12],
           }}
         >
-          <color attach="background" args={['#EDE5D8']} />
           <fog attach="fog" args={['#EDE5D8', 22, 55]} />
+          <DynamicAtmosphere sunsetFactor={sunsetFactor} />
 
           {/* Dynamic "Swoop & Level" Depth Camera Rig */}
           <CameraRig
@@ -233,9 +357,10 @@ export default function ScrapbookCanvas() {
             lookAtTarget={lookAtTarget}
           />
 
-          {/* Depth-Tracking Neutral Daylight Lighting */}
+          {/* Depth-Tracking Neutral Daylight & Sunset Lighting */}
           <ScrapbookLighting
             targetZ={currentChapter.baseZ}
+            sunsetFactor={sunsetFactor}
           />
 
           <Suspense fallback={null}>
