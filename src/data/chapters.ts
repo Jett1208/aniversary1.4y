@@ -73,7 +73,7 @@ export interface AnniversaryMetadata {
   coverSubtitle: string;
   startDateISO: string;
   finalLetterTitle: string;
-  finalLetterBody: string;
+  finalLetterBody?: string;
 }
 
 export const ANNIVERSARY_META: AnniversaryMetadata = {

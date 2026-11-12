@@ -69,7 +69,9 @@ export default function RelationshipTimer({
   if (compact) {
     return (
       <div className="text-xs font-sans text-stone-400">
-        <span>{elapsed.totalDays} วัน ({elapsed.years} ปี {elapsed.months} เดือน)</span>
+        <span>
+          {elapsed.totalDays} days ({elapsed.years} {elapsed.years === 1 ? 'year' : 'years'} {elapsed.months} {elapsed.months === 1 ? 'month' : 'months'})
+        </span>
       </div>
     );
   }
@@ -82,21 +84,27 @@ export default function RelationshipTimer({
           <span className="text-2xl sm:text-3xl font-semibold text-stone-900 tracking-tight font-serif mr-1">
             {elapsed.years}
           </span>
-          <span className="text-xs text-stone-500 font-sans">ปี</span>
+          <span className="text-xs text-stone-500 font-sans">
+            {elapsed.years === 1 ? 'Year' : 'Years'}
+          </span>
         </div>
 
         <div>
           <span className="text-2xl sm:text-3xl font-semibold text-stone-900 tracking-tight font-serif mr-1">
             {elapsed.months}
           </span>
-          <span className="text-xs text-stone-500 font-sans">เดือน</span>
+          <span className="text-xs text-stone-500 font-sans">
+            {elapsed.months === 1 ? 'Month' : 'Months'}
+          </span>
         </div>
 
         <div>
           <span className="text-2xl sm:text-3xl font-semibold text-stone-900 tracking-tight font-serif mr-1">
             {elapsed.days}
           </span>
-          <span className="text-xs text-stone-500 font-sans">วัน</span>
+          <span className="text-xs text-stone-500 font-sans">
+            {elapsed.days === 1 ? 'Day' : 'Days'}
+          </span>
         </div>
 
         <span className="text-stone-300 font-light">•</span>
@@ -109,7 +117,7 @@ export default function RelationshipTimer({
       </div>
 
       <div className="text-xs text-stone-400 mt-2 font-sans tracking-wide">
-        (รวมทั้งหมด {elapsed.totalDays} วัน)
+        (Total {elapsed.totalDays} days)
       </div>
     </div>
   );

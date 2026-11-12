@@ -32,7 +32,7 @@
 | **Smoke Cloud Screen Wipe** | The seamless full-screen transition where stylized white smoke plumes sweep outward from behind the launching rocket to momentarily cover the viewport and smoothly reveal Chapter 1 in 3D. |
 | **Page Block** | The layered deckled paper edges visible along the right and bottom sides of the closed Hardcover Scrapbook, giving it physical bulk and realism. |
 | **Ambient Dust Particles** | Floating warm golden light particles and subtle dust motes drifting across the Cover Page backdrop to create an intimate, nostalgic atmosphere. |
-| **Finale Page** | The final section containing the authentic handwritten stationery letter and the Relationship Timer, signed by Tanakrit Panichwattanacharoen. |
+| **Finale Page** | The final milestone modal card displaying the anniversary title and real-time relationship counter in clean English editorial typography. |
 | **Relationship Timer** | A real-time counter displaying years, months, days, and time since `startDateISO` in clean editorial typography. |
 | **New Year Fireworks Finale** | A grand multi-stage celebratory fireworks display resembling a New Year countdown celebration with spherical bursts, sparkling trails, and vibrant flash colors concluding Chapter 7 before unveiling the love letter. |
 | **Real Aerial Firework Engine** | High-performance custom HTML5 Canvas particle system simulating realistic display fireworks with physical ballistic rockets ascending from left and right launch mortars beside the table, emitting smoking spark tails, detonating at peak altitude into 80–120 spherical sparks with additive light bloom, motion blur trails, weeping willow cascades, and synthesized rocket whistles and detonation bass thuds. |

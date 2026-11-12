@@ -46,24 +46,6 @@ export default function FinalLetterModal({
           {ANNIVERSARY_META.finalLetterTitle}
         </h2>
 
-        {/* Letter Body */}
-        <div className="my-8 px-2 sm:px-4 text-center">
-          <p className="text-xl sm:text-2xl font-handwritten text-stone-800 leading-relaxed">
-            {ANNIVERSARY_META.finalLetterBody}
-          </p>
-        </div>
-
-        {/* Signature */}
-        <div className="mt-10 mb-8 text-right font-sans text-sm sm:text-base text-stone-700">
-          <span className="block text-xs text-stone-400 font-normal mb-0.5">จาก</span>
-          <span className="font-medium tracking-wide text-stone-900">
-            Tanakrit Panichwattanacharoen
-          </span>
-        </div>
-
-        {/* Subtle Divider */}
-        <div className="w-full h-px bg-stone-200 my-8" />
-
         {/* Relationship Timer Section */}
         <div className="pt-2 pb-2">
           <RelationshipTimer />
