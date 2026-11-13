@@ -473,10 +473,14 @@ export default function ScrapbookCanvas() {
             <span className="text-base font-handwritten text-[#2E1E12] font-bold tracking-wide">
               {currentChapter.locationName}
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
-            <span className="text-xs font-sans text-[#5C4533] font-medium hidden sm:inline">
-              {currentChapter.title}
-            </span>
+            {currentChapter.title && (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
+                <span className="text-xs font-sans text-[#5C4533] font-medium hidden sm:inline">
+                  {currentChapter.title}
+                </span>
+              </>
+            )}
           </div>
 
           {/* Minimal Scroll Progress Bar */}

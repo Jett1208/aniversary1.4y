@@ -61,15 +61,17 @@ export default function CaptionCard({ chapter, isDiving = false }: CaptionCardPr
         <h3 className="text-2xl font-bold font-handwritten text-[#4A3728] leading-tight mb-1.5">
           {displayedChapter.locationName}
         </h3>
-        <p className="text-xs font-semibold text-[#8C7665] font-sans mb-3">
-          {displayedChapter.title}
-        </p>
+        {displayedChapter.title && (
+          <p className="text-xs font-semibold text-[#8C7665] font-sans mb-3">
+            {displayedChapter.title}
+          </p>
+        )}
 
         {/* Faint Ruled Line */}
         <div className="w-full h-px bg-[#EADBCC] mb-3" />
 
         {/* Memory Caption */}
-        <p className="text-sm text-[#5C4533] leading-relaxed font-sans font-normal">
+        <p className="text-sm text-[#5C4533] leading-relaxed font-sans font-normal whitespace-pre-line">
           {displayedChapter.caption}
         </p>
 
